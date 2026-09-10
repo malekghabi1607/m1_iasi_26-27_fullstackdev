@@ -1,0 +1,10 @@
+{
+  "id": "42",
+  "nom_famille": "a la ferme",
+  "prenom": "toto",
+  "lieu_naissance": null,
+  "date_naissance": null,
+  "lieu_mort": null,
+  "date_mort": null,
+  "nationalite": null
+}
