@@ -2,6 +2,7 @@ from enum import Enum
 from typing import Optional, List
 from pydantic import BaseModel, Field
 
+
 class Personne(BaseModel):
     """
     Représente une personne avec ses informations biographiques de base.
