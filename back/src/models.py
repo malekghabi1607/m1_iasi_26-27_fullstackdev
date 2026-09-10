@@ -2,6 +2,7 @@ from enum import Enum
 from typing import Optional, List
 from pydantic import BaseModel, Field
 
+
 class Personne(BaseModel):
     """
     Représente une personne avec ses informations biographiques de base.
@@ -19,21 +20,21 @@ class Personne(BaseModel):
         nationalite (Optional[str]): La nationalité de la personne. Par défaut à None.
     """
     id: str = Field(..., description="Unique identifier for the person (e.g., 'p_001').")
-    nom_famille: str
-    prenom: str
-    lieu_naissance: str
+    nom_famille: Optional[str] = None
+    prenom: Optional[str] = None
+    lieu_naissance: Optional[str] = None
     date_naissance: Optional[str] = Field(
         default=None, 
         pattern=r"^\d{4}(-\d{2}-\d{2})?$", 
         description="Allows full ISO date or just the year."
     )
-    lieu_mort: str
+    lieu_mort: Optional[str] = None
     date_mort: Optional[str] = Field(
         default=None, 
         pattern=r"^\d{4}(-\d{2}-\d{2})?$", 
         description="Allows full ISO date or just the year."
     )
-    nationalite: Optional[str]
+    nationalite: Optional[str] = None
 
 
 class LienType(str, Enum):
