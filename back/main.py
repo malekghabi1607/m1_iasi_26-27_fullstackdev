@@ -1,13 +1,6 @@
 from src.models import Personne, ArbreGenealogique, Lien, LienType
 from src.persistence import MoteurPersistence
-from fastapi import FastAPI
-
-app = FastAPI()
-
-
-@app.get("/")
-def read_root():
-  return {"Hello": "World"}
+from src.routes.default import app
 
 
 def hello_world():
