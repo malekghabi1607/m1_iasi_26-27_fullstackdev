@@ -1,5 +1,10 @@
+import os
+
 from fastapi import FastAPI
 import uvicorn
+from pathlib import Path
+from src.models import ArbreGenealogique, Personne
+from src.persistence import MoteurPersistence
 
 app = FastAPI()
 
@@ -11,7 +16,9 @@ async def root():
 
 @app.get('/personnes')
 async def get_personnes():
-    return 'je suis censé être la liste des utilisateurs'
+    loaded_file: ArbreGenealogique = MoteurPersistence.load('./data/example.json')
+    return loaded_file.personnes
+    # return 'je suis censé être la liste des personnes'
 
 
 @app.post('/personne')
