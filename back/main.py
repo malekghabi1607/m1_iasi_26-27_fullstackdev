@@ -23,8 +23,9 @@ def hello_world():
 
     # Faire une fonction charge qui décharge un JSON vers un objet Personne.
     test: ArbreGenealogique = MoteurPersistence.load(MoteurPersistence.FICHIER)
-    print(test)
-    print(type(test))
+
+    print(f"Idempotence des operations: {arbre_personne == test}")
+
 
 if __name__ == '__main__':
     hello_world()
