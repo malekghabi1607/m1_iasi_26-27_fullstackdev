@@ -1,16 +1,17 @@
 """Persistence of a genealogical tree in a JSON file."""
 
 import os
+import json
 from pathlib import Path
 
-from src.models import GenealogicalTree
+from src.models import ArbreGenealogique
 
 
 class MoteurPersistence:
     """Read and write validated genealogical trees as JSON."""
 
     @staticmethod
-    def dump(tree: GenealogicalTree, file_path: str) -> None:
+    def dump(tree: ArbreGenealogique, file_path: str) -> None:
         """Write a genealogical tree to a JSON file."""
         path = Path(file_path)
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -28,11 +29,18 @@ class MoteurPersistence:
             raise
 
     @staticmethod
-    def load(file_path: str) -> GenealogicalTree:
+    def load(file_path: str) -> ArbreGenealogique:
         """Read a JSON file and return a validated genealogical tree."""
-        return GenealogicalTree.model_validate_json(
+        return ArbreGenealogique.model_validate_json(
             Path(file_path).read_text(encoding="utf-8")
         )
+        
+    @staticmethod
+    def read(file_path: str) :
+        """Read a JSON file and return it's content"""
+        with open(Path(file_path),'r') as file :
+            data = json.load(file)
+            return data
 
 
 PersistenceEngine = MoteurPersistence

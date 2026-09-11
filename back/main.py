@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 import uvicorn
+from persistence import PersistenceEngine
 
 app = FastAPI()
 
@@ -11,7 +12,8 @@ async def root():
 
 @app.get('/personnes')
 async def get_personnes():
-    return 'je suis censé être la liste des utilisateurs'
+    data = PersistenceEngine.read('./data/data.json')
+    return data['personnes']
 
 
 @app.post('/personne')
