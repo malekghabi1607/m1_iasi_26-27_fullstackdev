@@ -70,7 +70,7 @@ class Lien(BaseModel):
     type: LienType = Field(..., description="The explicit type of relationship connecting the source and target.")
 
 
-class ArbreGenealogiqe(BaseModel):
+class ArbreGenealogique(BaseModel):
     """The complete Family Tree graph structure.
 
     Attributes:

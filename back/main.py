@@ -1,4 +1,4 @@
-from src.models import Personne, ArbreGenealogiqe, Lien, LienType
+from src.models import Personne, ArbreGenealogique, Lien, LienType
 from src.persistence import MoteurPersistence
 
 
@@ -16,14 +16,13 @@ def hello_world():
                 destination="44",
                 type=LienType.PARTENAIRE)
 
-    arbre_personne = ArbreGenealogiqe(personnes=[test_personne, other_personne], liens=[link])
-    print(arbre_personne)
+    arbre_personne = ArbreGenealogique(personnes=[test_personne, other_personne], liens=[link])
 
     # Faire une fonction stockage qui prend une personne et qui écrit dans un JSON.
-    MoteurPersistence.dump(arbre_personne)
+    MoteurPersistence.dump(arbre_personne, MoteurPersistence.FICHIER)
 
     # Faire une fonction charge qui décharge un JSON vers un objet Personne.
-    test: ArbreGenealogiqe = MoteurPersistence.load(MoteurPersistence.FICHIER)
+    test: ArbreGenealogique = MoteurPersistence.load(MoteurPersistence.FICHIER)
     print(test)
     print(type(test))
 
