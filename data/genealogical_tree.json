@@ -1,0 +1,32 @@
+{
+  "people": [
+    {
+      "identifier": "p_001",
+      "last_name": "Lovelace",
+      "first_name": "Ada",
+      "place_of_birth": null,
+      "date_of_birth": null,
+      "place_of_death": null,
+      "date_of_death": null,
+      "nationality": null
+    },
+    {
+      "identifier": "p_002",
+      "last_name": "Name",
+      "first_name": "Some",
+      "place_of_birth": null,
+      "date_of_birth": null,
+      "place_of_death": null,
+      "date_of_death": null,
+      "nationality": null
+    }
+  ],
+  "relationships": [
+    {
+      "id": "r_001",
+      "source": "p_001",
+      "destination": "p_002",
+      "type": "parent"
+    }
+  ]
+}
