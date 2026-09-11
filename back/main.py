@@ -1,5 +1,5 @@
 from src.models import GenealogicalTree, Person
-from persistence import PersistenceEngine
+from persistence import MoteurPersistence
 
 
 def main() -> None:
@@ -10,8 +10,8 @@ def main() -> None:
         last_name="Lovelace",
     )
     tree = GenealogicalTree(people=[person], relationships=[])
-    PersistenceEngine.dump(tree, "data/genealogical_tree.json")
-    PersistenceEngine.load("data/genealogical_tree.json")
+    MoteurPersistence.dump(tree, "data/genealogical_tree.json")
+    MoteurPersistence.load("data/genealogical_tree.json")
 
 
 if __name__ == "__main__":
