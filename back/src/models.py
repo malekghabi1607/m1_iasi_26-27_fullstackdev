@@ -2,41 +2,42 @@ from enum import Enum
 from typing import Optional, List
 from pydantic import BaseModel, Field
 
-class Person(BaseModel):
+
+class Personne(BaseModel):
     """
-    A person and their base biographic informations.
+    Représente une personne avec ses informations biographiques de base.
 
     Attributes:
-        id (str): unique person's id (ex. : 'p_001'). Required.
-        last_name (str): The person's last name. None by default.
-        first_name (str): The person's first name. None by default.
-        place_of_birth (str): The person's place of birth. None by default.
-        date_of_birth (Optional[str]): The date of birth. Can be on full 
-            format ISO 8601 (AAAA-MM-JJ) or only year (AAAA). None by default.
-        place_of_death (str): The person's place of death. None by default
-        date_of_death (Optional[str]): The date of death. Can be on full
-            format ISO 8601 (AAAA-MM-JJ) or only year (AAAA). None by default.
-        Nationality (Optional[str]): The person's nationality. None by default.
+        id (str): Identifiant unique de la personne (ex. : 'p_001'). Requis.
+        nom_famille (str): Le nom de famille de la personne. Requis.
+        prenom (str): Le prénom de la personne. Requis.
+        lieu_naissance (str): Le lieu de naissance de la personne. Requis.
+        date_naissance (Optional[str]): La date de naissance. Peut être au format 
+            complet ISO 8601 (AAAA-MM-JJ) ou juste l'année (AAAA). Par défaut à None.
+        lieu_mort (str): Le lieu de décès de la personne. Requis.
+        date_mort (Optional[str]): La date de décès. Peut être au format 
+            complet ISO 8601 (AAAA-MM-JJ) ou juste l'année (AAAA). Par défaut à None.
+        nationalite (Optional[str]): La nationalité de la personne. Par défaut à None.
     """
     id: str = Field(..., description="Unique identifier for the person (e.g., 'p_001').")
-    last_name: str
-    first_name: str
-    place_of_birth: str
-    date_of_birth: Optional[str] = Field(
+    nom_famille: Optional[str] = None
+    prenom: Optional[str] = None
+    lieu_naissance: Optional[str] = None
+    date_naissance: Optional[str] = Field(
         default=None, 
         pattern=r"^\d{4}(-\d{2}-\d{2})?$", 
         description="Allows full ISO date or just the year."
     )
-    place_of_death: str
-    date_of_death: Optional[str] = Field(
+    lieu_mort: Optional[str] = None
+    date_mort: Optional[str] = Field(
         default=None, 
         pattern=r"^\d{4}(-\d{2}-\d{2})?$", 
         description="Allows full ISO date or just the year."
     )
-    nationality: Optional[str]
+    nationalite: Optional[str] = None
 
 
-class LinkType(str, Enum):
+class LienType(str, Enum):
     """Enumeration of allowed relationship types within the family tree.
 
     Attributes:
@@ -47,10 +48,10 @@ class LinkType(str, Enum):
         PARTNER (str): A formal partnership between peers.
     """
     PARENT = "parent"
-    PARTNER = "partner"
+    PARTENAIRE = "partenaire"
 
 
-class Link(BaseModel):
+class Lien(BaseModel):
     """Represents a relationship edge between two individuals.
 
     Attributes:
@@ -66,15 +67,15 @@ class Link(BaseModel):
     id: str = Field(..., description="Unique identifier for the relationship link (e.g., 'l_001').")
     source: str = Field(..., description="ID of the source node.")
     destination: str = Field(..., description="ID of the target node.")
-    type: LinkType = Field(..., description="The explicit type of relationship connecting the source and target.")
+    type: LienType = Field(..., description="The explicit type of relationship connecting the source and target.")
 
 
-class FamilyTree(BaseModel):
+class ArbreGenealogiqe(BaseModel):
     """The complete Family Tree graph structure.
 
     Attributes:
         nodes (List[Node]): List of individuals.
         links (List[Link]): List of relationships.
     """
-    persons: List[Person] = Field(..., description="List of individuals (entities) in the family tree.")
-    liens: List[Link] = Field(..., description="List of relationships (edges) between individuals.")
+    personnes: List[Personne] = Field(..., description="List of individuals (entities) in the family tree.")
+    liens: List[Lien] = Field(..., description="List of relationships (edges) between individuals.")
