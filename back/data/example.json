@@ -1,0 +1,32 @@
+{
+  "personnes": [
+    {
+      "id": "42",
+      "nom_famille": "a la ferme",
+      "prenom": "toto",
+      "lieu_naissance": null,
+      "date_naissance": null,
+      "lieu_mort": null,
+      "date_mort": null,
+      "nationalite": null
+    },
+    {
+      "id": "44",
+      "nom_famille": "lalalalalalla",
+      "prenom": "the other one",
+      "lieu_naissance": null,
+      "date_naissance": null,
+      "lieu_mort": null,
+      "date_mort": null,
+      "nationalite": null
+    }
+  ],
+  "liens": [
+    {
+      "id": "1",
+      "source": "42",
+      "destination": "44",
+      "type": "partenaire"
+    }
+  ]
+}
