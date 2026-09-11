@@ -10,12 +10,12 @@ async def root():
 
 
 @app.get('/personnes')
-async def get_users():
+async def get_personnes():
     return 'je suis censé être la liste des utilisateurs'
 
 
-@app.post('/user')
-async def post_user():
+@app.post('/personne')
+async def post_personne():
     """Je suis censé récupérer des data envoyes par le client et les ecrire
     dans le fichier"""
     return ''
