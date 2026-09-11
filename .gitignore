@@ -1,0 +1,8 @@
+.idea/
+.venv/
+
+# Ignore data (except for example one)
+back/data/*.json
+!back/data/*.json
+
+__pycache__/
