@@ -8,12 +8,12 @@ class Person(BaseModel):
 
     Attributes:
         id (str): unique person's id (ex. : 'p_001'). Required.
-        last_name (str): The person's last name. Required.
-        first_name (str): The person's first name. Required.
-        place_of_birth (str): The person's place of birth. Required.
+        last_name (str): The person's last name. None by default.
+        first_name (str): The person's first name. None by default.
+        place_of_birth (str): The person's place of birth. None by default.
         date_of_birth (Optional[str]): The date of birth. Can be on full 
             format ISO 8601 (AAAA-MM-JJ) or only year (AAAA). None by default.
-        place_of_death (str): The person's place of death. Required
+        place_of_death (str): The person's place of death. None by default
         date_of_death (Optional[str]): The date of death. Can be on full
             format ISO 8601 (AAAA-MM-JJ) or only year (AAAA). None by default.
         Nationality (Optional[str]): The person's nationality. None by default.
