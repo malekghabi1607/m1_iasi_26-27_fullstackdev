@@ -1,45 +1,23 @@
-"""Persistence of the genealogy tree in a JSON file."""
+"""Persistence of a genealogical tree in a JSON file."""
 
-from __future__ import annotations
-
-import json
-import os
 from pathlib import Path
 
-try:
-    from .models import FamilyTree
-except ImportError:
-    from models import FamilyTree
+from src.models import GenealogicalTree
 
 
-class TreePersistance:
-    """Load and save an :class:`FamilyTree` as JSON."""
+class PersistenceEngine:
+    """Read and write validated genealogical trees as JSON."""
 
-    def __init__(self, path: str | Path) -> None:
-        self.path = Path(path)
+    @staticmethod
+    def dump(tree: GenealogicalTree, file_path: str) -> None:
+        """Write a genealogical tree to a JSON file."""
+        path = Path(file_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(tree.model_dump_json(indent=2), encoding="utf-8")
 
-    def load(self) -> FamilyTree:
-        """Take a json file path and return a FamilyTree."""
-        if not self.path.exists():
-            return FamilyTree(personnes=[], liens=[])
-
-        with self.path.open("r", encoding="utf-8") as file:
-            content = json.load(file)
-        return FamilyTree.model_validate(content)
-
-    def save(self, tree: FamilyTree) -> None:
-        """Persist a validated tree atomically."""
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        temp = self.path.with_suffix(f"{self.path.suffix}.tmp")
-        content = tree.model_dump(mode="json")
-
-        try:
-            with temp.open("w", encoding="utf-8") as file:
-                json.dump(content, file, ensure_ascii=False, indent=2)
-                file.write("\n")
-                file.flush()
-                os.fsync(file.fileno())
-            temp.replace(self.path)
-        except Exception:
-            temp.unlink(missing_ok=True)
-            raise
+    @staticmethod
+    def load(file_path: str) -> GenealogicalTree:
+        """Read a JSON file and return a validated genealogical tree."""
+        return GenealogicalTree.model_validate_json(
+            Path(file_path).read_text(encoding="utf-8")
+        )

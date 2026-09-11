@@ -1,13 +1,18 @@
-from src.models import Personne
+from src.models import GenealogicalTree, Person
+from persistence import PersistenceEngine
 
 
-def hello_world():
-    print('Hello world')
+def main() -> None:
+    """Run a small persistence example."""
+    person = Person(
+        identifier="p_001",
+        first_name="Ada",
+        last_name="Lovelace",
+    )
+    tree = GenealogicalTree(people=[person], relationships=[])
+    PersistenceEngine.dump(tree, "data/genealogical_tree.json")
+    PersistenceEngine.load("data/genealogical_tree.json")
 
-    test_personne = Personne(identifiant=42,
-                             prenom='toto',
-                             nom_famille='a la ferme')
 
-
-if __name__ == '__main__':
-    hello_world()
+if __name__ == "__main__":
+    main()
