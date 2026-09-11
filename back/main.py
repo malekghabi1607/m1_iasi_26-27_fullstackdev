@@ -1,31 +1,25 @@
-from src.models import Personne, ArbreGenealogique, Lien, LienType
-from src.persistence import MoteurPersistence
+from fastapi import FastAPI
+import uvicorn
+
+app = FastAPI()
 
 
-def hello_world():
-    print('Hello world')
-
-    test_personne = Personne(id="42",
-                             prenom='toto',
-                             nom_famille='a la ferme')
-    other_personne = Personne(id="44",
-                              prenom='the other one',
-                              nom_famille='lalalalalalla')
-    link = Lien(id="1",
-                source="42",
-                destination="44",
-                type=LienType.PARTENAIRE)
-
-    arbre_personne = ArbreGenealogique(personnes=[test_personne, other_personne], liens=[link])
-
-    # Faire une fonction stockage qui prend une personne et qui écrit dans un JSON.
-    MoteurPersistence.dump(arbre_personne, MoteurPersistence.FICHIER)
-
-    # Faire une fonction charge qui décharge un JSON vers un objet Personne.
-    test: ArbreGenealogique = MoteurPersistence.load(MoteurPersistence.FICHIER)
-
-    print(f"Idempotence des operations: {arbre_personne == test}")
+@app.get('/')
+async def root():
+    return 'Hello world, bonjour, konichiwa'
 
 
-if __name__ == '__main__':
-    hello_world()
+@app.get('/personnes')
+async def get_personnes():
+    return 'je suis censé être la liste des utilisateurs'
+
+
+@app.post('/personne')
+async def post_personne():
+    """Je suis censé récupérer des data envoyes par le client et les ecrire
+    dans le fichier"""
+    return ''
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="127.0.0.1", port=9999, reload=False)
