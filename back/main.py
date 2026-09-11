@@ -1,18 +1,10 @@
-from src.models import GenealogicalTree, Person
-from persistence import MoteurPersistence
+from fastapi import FastAPI
 
 
-def main() -> None:
-    """Run a small persistence example."""
-    person = Person(
-        identifier="p_001",
-        first_name="Ada",
-        last_name="Lovelace",
-    )
-    tree = GenealogicalTree(people=[person], relationships=[])
-    MoteurPersistence.dump(tree, "data/genealogical_tree.json")
-    MoteurPersistence.load("data/genealogical_tree.json")
+app = FastAPI()
 
 
-if __name__ == "__main__":
-    main()
+@app.get("/")
+def hello_world() -> str:
+    """Return a greeting from the API."""
+    return "Hello World"
