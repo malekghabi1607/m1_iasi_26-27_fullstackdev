@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 import pytest
 from src.models import Personne, ArbreGenealogique
 from persistence import MoteurPersistence
@@ -14,6 +15,10 @@ def moi():
         date_naissance="1972-09-25",
         nationalite="Français",
     )
+    
+@pytest.fixture
+def chemin():
+    return Path("test_data/data.json")
 
 
 @pytest.fixture
@@ -21,9 +26,8 @@ def arbre(moi):
     return ArbreGenealogique(personnes=[moi], liens=[])
 
 
-def test_dump_cree_le_fichier(arbre, moi, tmp_path):
-    chemin = tmp_path / "data.json"
-
+def test_dump_cree_le_fichier(arbre, moi, chemin):
+    
     MoteurPersistence.dump(arbre, str(chemin))
 
     assert chemin.exists()
