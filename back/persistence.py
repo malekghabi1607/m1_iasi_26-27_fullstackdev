@@ -31,9 +31,10 @@ class MoteurPersistence:
     @staticmethod
     def load(file_path: str) -> ArbreGenealogique:
         """Read a JSON file and return a validated genealogical tree."""
-        return ArbreGenealogique.model_validate_json(
-            Path(file_path).read_text(encoding="utf-8")
-        )
+        path = Path(file_path)
+        if not path.is_file():
+            raise FileNotFoundError(f"Le fichier {file_path} n'existe pas.")
+        return ArbreGenealogique.model_validate_json(path.read_text(encoding="utf-8"))
         
     @staticmethod
     def read(file_path: str) :
