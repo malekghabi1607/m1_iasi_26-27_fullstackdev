@@ -18,42 +18,56 @@ class TestCreateLien:
         TODO: Vérifier qu'un lien peut être créé avec les champs obligatoires (id, source, destination, type).
         Indice : Utiliser Lien(id="1", source="p1", destination="p2", type=LienType.PARENT).
         """
-        pass
+        lien = Lien(id="1", source="p1", destination="p2", type=LienType.PARENT)
+
+        assert lien.id == "1"
+        assert lien.type == LienType.PARENT
+
 
     def test_creer_lien_sans_id_echoue(self):
         """
         TODO: Vérifier qu'une ValidationError est levée si l'ID est manquant.
         Indice : Utiliser pytest.raises(ValidationError) et Lien(source="p1", destination="p2", type=LienType.PARENT).
         """
-        pass
+        with pytest.raises(ValidationError):
+            Lien(source="p1", destination="p2", type=LienType.PARENT)
+
 
     def test_creer_lien_sans_source_echoue(self):
         """
         TODO: Vérifier qu'une ValidationError est levée si la source est manquante.
         Indice : Utiliser pytest.raises(ValidationError) et Lien(id="1", destination="p2", type=LienType.PARENT).
         """
-        pass
+        with pytest.raises(ValidationError):
+            Lien(id="1", destination="p2", type=LienType.PARENT)
+
 
     def test_creer_lien_sans_destination_echoue(self):
         """
         TODO: Vérifier qu'une ValidationError est levée si la destination est manquante.
         Indice : Utiliser pytest.raises(ValidationError) et Lien(id="1", source="p1", type=LienType.PARENT).
         """
-        pass
+        with pytest.raises(ValidationError):
+            Lien(id="1", source="p1", type=LienType.PARENT)
+
 
     def test_creer_lien_sans_type_echoue(self):
         """
         TODO: Vérifier qu'une ValidationError est levée si le type est manquant.
         Indice : Utiliser pytest.raises(ValidationError) et Lien(id="1", source="p1", destination="p2").
         """
-        pass
+        with pytest.raises(ValidationError):
+            Lien(id="1", source="p1", destination="p2")
+
 
     def test_creer_lien_avec_type_invalide_echoue(self):
         """
         TODO: Vérifier qu'une ValidationError est levée si le type est invalide (ex: "ami").
         Indice : Utiliser pytest.raises(ValidationError) et Lien(id="1", source="p1", destination="p2", type="ami").
         """
-        pass
+        with pytest.raises(ValidationError):
+            Lien(id="1", source="p1", destination="p2", type="ami")
+
 
 
 class TestReadLien:
