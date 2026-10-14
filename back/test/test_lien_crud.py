@@ -100,6 +100,7 @@ class TestDeleteLien:
         lien = Lien(id="1", source="p1", destination="p2", type=LienType.PARENT)
         liens = [lien]
         liens.remove(lien)
+        assert lien not in liens
 
     def test_supprimer_lien_inexistant_echoue(self):
         """Vérifie qu'une erreur est levée si on tente de supprimer un lien inexistant."""
