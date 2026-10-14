@@ -155,11 +155,23 @@ class TestDeletePersonne:
         TODO: Vérifier qu'une personne peut être supprimée (ex: en utilisant del ou une méthode dédiée).
         Indice : Si une liste de personnes est utilisée, vérifier que la personne est retirée.
         """
-        pass
+        jean = Personne(id="1", prenom="Jean")
+        paul = Personne(id="2", prenom="Paul")
+        personnes = [jean, paul]
+
+        personnes.remove(jean)
+
+        assert jean not in personnes
+        assert len(personnes) == 1
+
 
     def test_supprimer_personne_inexistante_echoue(self):
         """
         TODO: Vérifier qu'une erreur est levée si on tente de supprimer une personne inexistante.
         Indice : Utiliser pytest.raises() avec une exception appropriée (ex: ValueError).
         """
-        pass
+        personnes = [Personne(id="1", prenom="Jean")]
+
+        with pytest.raises(ValueError):
+            personnes.remove(Personne(id="999"))
+
