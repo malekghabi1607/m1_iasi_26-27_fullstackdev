@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import Optional, List
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class Personne(BaseModel):
@@ -8,20 +8,21 @@ class Personne(BaseModel):
     Représente une personne avec ses informations biographiques de base.
 
     Attributes:
-                id (str): Identifiant unique de la personne (ex. : 'p_001'). Requis.
+        id (str): Identifiant unique de la personne (ex. : 'p_001'). Requis.
             Ne peut pas être vide (min_length=1) car il sert à relier
             les personnes entre elles via les liens.
-
-        nom_famille (str): Le nom de famille de la personne. Requis.
-        prenom (str): Le prénom de la personne. Requis.
-        lieu_naissance (str): Le lieu de naissance de la personne. Requis.
-        date_naissance (Optional[str]): La date de naissance. Peut être au format 
-            complet ISO 8601 (AAAA-MM-JJ) ou juste l'année (AAAA). Par défaut à None.
-        lieu_mort (str): Le lieu de décès de la personne. Requis.
-        date_mort (Optional[str]): La date de décès. Peut être au format 
-            complet ISO 8601 (AAAA-MM-JJ) ou juste l'année (AAAA). Par défaut à None.
-        nationalite (Optional[str]): La nationalité de la personne. Par défaut à None.
+        nom_famille (Optional[str]): Le nom de famille. Par défaut à None.
+        prenom (Optional[str]): Le prénom. Par défaut à None.
+        lieu_naissance (Optional[str]): Le lieu de naissance. Par défaut à None.
+        date_naissance (Optional[str]): La date de naissance, au format
+            AAAA-MM-JJ ou AAAA. Par défaut à None.
+        lieu_mort (Optional[str]): Le lieu de décès. Par défaut à None.
+        date_mort (Optional[str]): La date de décès, au format
+            AAAA-MM-JJ ou AAAA. Par défaut à None.
+        nationalite (Optional[str]): La nationalité. Par défaut à None.
     """
+    model_config = ConfigDict(validate_assignment=True)
+
     # min_length=1 : refuse un id vide ("") car l'id sert à relier les personnes via les liens
     id: str = Field(...,  min_length=1 , description="Unique identifier for the person (e.g., 'p_001').")
     nom_famille: Optional[str] = None
