@@ -1,5 +1,3 @@
-import os
-
 from fastapi import FastAPI
 import uvicorn
 from pathlib import Path

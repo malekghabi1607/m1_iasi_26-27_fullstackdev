@@ -1,0 +1,131 @@
+"""
+Tests pour les opérations CRUD sur les liens.
+
+Objectif : Tester les opérations unitaires sur les liens (création, lecture, mise à jour, suppression).
+"""
+
+import pytest
+from pydantic import ValidationError
+
+from src.models import Lien, LienType
+
+
+class TestCreateLien:
+    """Tests pour la création d'un lien."""
+
+    def test_creer_lien_avec_champs_obligatoires(self):
+        """
+        TODO: Vérifier qu'un lien peut être créé avec les champs obligatoires (id, source, destination, type).
+        Indice : Utiliser Lien(id="1", source="p1", destination="p2", type=LienType.PARENT).
+        """
+        pass
+
+    def test_creer_lien_sans_id_echoue(self):
+        """
+        TODO: Vérifier qu'une ValidationError est levée si l'ID est manquant.
+        Indice : Utiliser pytest.raises(ValidationError) et Lien(source="p1", destination="p2", type=LienType.PARENT).
+        """
+        pass
+
+    def test_creer_lien_sans_source_echoue(self):
+        """
+        TODO: Vérifier qu'une ValidationError est levée si la source est manquante.
+        Indice : Utiliser pytest.raises(ValidationError) et Lien(id="1", destination="p2", type=LienType.PARENT).
+        """
+        pass
+
+    def test_creer_lien_sans_destination_echoue(self):
+        """
+        TODO: Vérifier qu'une ValidationError est levée si la destination est manquante.
+        Indice : Utiliser pytest.raises(ValidationError) et Lien(id="1", source="p1", type=LienType.PARENT).
+        """
+        pass
+
+    def test_creer_lien_sans_type_echoue(self):
+        """
+        TODO: Vérifier qu'une ValidationError est levée si le type est manquant.
+        Indice : Utiliser pytest.raises(ValidationError) et Lien(id="1", source="p1", destination="p2").
+        """
+        pass
+
+    def test_creer_lien_avec_type_invalide_echoue(self):
+        """
+        TODO: Vérifier qu'une ValidationError est levée si le type est invalide (ex: "ami").
+        Indice : Utiliser pytest.raises(ValidationError) et Lien(id="1", source="p1", destination="p2", type="ami").
+        """
+        pass
+
+
+class TestReadLien:
+    """Tests pour la lecture des informations d'un lien."""
+
+    def test_lire_lien_avec_id_valide_et_ressource_presente(self):
+        """
+        TODO: Vérifier qu'un lien peut être lu avec un ID valide et que la ressource existe.
+        Indice : Créer un Lien(id="1", ...) et vérifier que lien.id == "1".
+        """
+        pass
+
+    def test_lire_lien_avec_id_valide_et_ressource_manquante(self):
+        """
+        TODO: Vérifier qu'une erreur est levée si l'ID est valide mais que la ressource n'existe pas.
+        Indice : Utiliser pytest.raises() avec une exception appropriée (ex: KeyError ou ValueError).
+        """
+        pass
+
+    def test_lire_lien_avec_id_invalide(self):
+        """
+        TODO: Vérifier qu'une ValidationError est levée si l'ID est invalide (ex: None ou vide).
+        Indice : Utiliser pytest.raises(ValidationError) et Lien(id=None, ...).
+        """
+        pass
+
+
+class TestUpdateLien:
+    """Tests pour la mise à jour des informations d'un lien."""
+
+    def test_mettre_a_jour_type_lien(self):
+        """
+        TODO: Vérifier qu'un lien peut être mis à jour avec un nouveau type valide.
+        Indice : Créer un Lien, puis modifier son type et vérifier la mise à jour.
+        """
+        pass
+
+    def test_mettre_a_jour_source_lien(self):
+        """
+        TODO: Vérifier qu'un lien peut être mis à jour avec une nouvelle source.
+        Indice : Créer un Lien, puis modifier sa source et vérifier la mise à jour.
+        """
+        pass
+
+    def test_mettre_a_jour_destination_lien(self):
+        """
+        TODO: Vérifier qu'un lien peut être mis à jour avec une nouvelle destination.
+        Indice : Créer un Lien, puis modifier sa destination et vérifier la mise à jour.
+        """
+        pass
+
+    def test_mettre_a_jour_avec_type_invalide_echoue(self):
+        """
+        TODO: Vérifier qu'une ValidationError est levée si un type invalide est assigné.
+        Indice : Utiliser pytest.raises(ValidationError) et assigner un type comme "ami".
+        """
+        pass
+
+
+class TestDeleteLien:
+    """Tests pour la suppression d'un lien."""
+
+    def test_supprimer_lien(self):
+        """
+        TODO: Vérifier qu'un lien peut être supprimé (ex: en utilisant del ou une méthode dédiée).
+        Indice : Si une liste de liens est utilisée, vérifier que le lien est retiré.
+        """
+        pass
+
+    def test_supprimer_lien_inexistant_echoue(self):
+        """
+        TODO: Vérifier qu'une erreur est levée si on tente de supprimer un lien inexistant.
+        Indice : Utiliser pytest.raises() avec une exception appropriée (ex: ValueError).
+        """
+        pass
