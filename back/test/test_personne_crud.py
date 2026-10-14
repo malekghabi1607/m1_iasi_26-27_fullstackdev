@@ -18,6 +18,12 @@ class TestCreatePersonne:
         TODO: Vérifier qu'une personne peut être créée avec uniquement un ID.
         Indice : Utiliser Personne(id="123").
         """
+        personne = Personne(id="123")
+
+        assert personne.id == "123"
+        assert personne.nom_famille is None
+        assert personne.prenom is None
+
         pass
 
     def test_creer_personne_avec_tous_les_champs(self):
@@ -25,6 +31,22 @@ class TestCreatePersonne:
         TODO: Vérifier qu'une personne peut être créée avec tous les champs valides.
         Indice : Utiliser Personne(id="123", nom_famille="Dupont", prenom="Jean", ...).
         """
+        personne = Personne(
+            id="123",
+            nom_famille="Dupont",
+            prenom="Jean",
+            lieu_naissance="Lille",
+            date_naissance="2000-05-15",
+            lieu_mort="Lille",
+            date_mort="2020",
+            nationalite="Française",
+        )
+
+        assert personne.nom_famille == "Dupont"
+        assert personne.prenom == "Jean"
+        assert personne.date_naissance == "2000-05-15"
+        assert personne.date_mort == "2020"
+
         pass
 
     def test_creer_personne_sans_id_echoue(self):
@@ -32,6 +54,9 @@ class TestCreatePersonne:
         TODO: Vérifier qu'une ValidationError est levée si l'ID est manquant.
         Indice : Utiliser pytest.raises(ValidationError) et Personne().
         """
+        with pytest.raises(ValidationError):
+            Personne()
+
         pass
 
     def test_creer_personne_avec_id_invalide_echoue(self):
@@ -39,6 +64,11 @@ class TestCreatePersonne:
         TODO: Vérifier qu'une ValidationError est levée si l'ID est invalide (ex: None ou vide).
         Indice : Tester avec Personne(id=None) et Personne(id="").
         """
+        with pytest.raises(ValidationError):
+            Personne(id=None)
+        with pytest.raises(ValidationError):
+            Personne(id="")
+
         pass
 
 
