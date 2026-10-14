@@ -78,12 +78,16 @@ class TestCreateLien:
 class TestReadLien:
     """Tests pour la lecture des informations d'un lien."""
 
-    def test_lire_lien_avec_id_valide_et_ressource_presente(self):
+    def test_lire_lien_avec_id_valide_et_ressource_presente(self, fichier_arbre_avec_lien):
+
         """
         TODO: Vérifier qu'un lien peut être lu avec un ID valide et que la ressource existe.
         Indice : Créer un Lien(id="1", ...) et vérifier que lien.id == "1".
         """
-        pass
+        lien = MoteurPersistence.get_lien(fichier_arbre_avec_lien, "l_001")
+        assert lien.id == "l_001"
+        assert lien.source == "p_001"
+
 
     def test_lire_lien_avec_id_valide_et_ressource_manquante(self):
         """
