@@ -21,7 +21,9 @@ class Personne(BaseModel):
             AAAA-MM-JJ ou AAAA. Par défaut à None.
         nationalite (Optional[str]): La nationalité. Par défaut à None.
     """
+      # revalide les champs à chaque modification
     model_config = ConfigDict(validate_assignment=True)
+
 
     # min_length=1 : refuse un id vide ("") car l'id sert à relier les personnes via les liens
     id: str = Field(...,  min_length=1 , description="Unique identifier for the person (e.g., 'p_001').")
