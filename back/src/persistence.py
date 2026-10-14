@@ -87,8 +87,15 @@ class MoteurPersistence:
         MoteurPersistence.dump(arbre, file_path)
 
     # === CRUD liens === #
-    def create_lien(lien_id):
-        pass
+    @staticmethod
+    def create_lien(file_path: str, lien) -> ArbreGenealogique:
+        """Ajoute un lien à l'arbre généalogique dans le fichier spécifié."""
+        arbre = MoteurPersistence.load(file_path)
+
+        arbre.liens.append(lien)
+        MoteurPersistence.dump(arbre, file_path)
+        return arbre
+
 
     def get_lien(lien_id):
         pass
