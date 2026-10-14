@@ -106,9 +106,9 @@ class MoteurPersistence:
         """Récupère un lien par son ID depuis le fichier spécifié."""
         arbre = MoteurPersistence.load(file_path)
         for lien in arbre.liens:
-            if lien.id == lien:
+            if lien.id == lien_id:
                 return lien
-        raise ValueError(f"Lien avec l'ID {lien} non trouvée.")
+        raise ValueError(f"Lien avec l'ID {lien_id} non trouvée.")
 
 
     def update_lien(file_path: str, lien_id: str, updates: dict) -> Lien:
