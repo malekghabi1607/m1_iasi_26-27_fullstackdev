@@ -17,7 +17,7 @@ class TestCreatePersonne:
     def test_creer_personne_avec_id_uniquement(self,personne_minimale,fichier_arbre):
         """Vérifie qu'une personne créée avec uniquement un id porte bien son id et le reste en None"""
         p = personne_minimale
-        MoteurPersistence.add_personne(p,fichier_arbre)
+        MoteurPersistence.create_personne(p,fichier_arbre)
         arbre = MoteurPersistence.load(fichier_arbre)
         assert any(personne.id == "p_002" for personne in arbre.personnes)
 
@@ -27,7 +27,7 @@ class TestCreatePersonne:
         """Vérifie qu'une personne complète est correctement enregistrée."""
 
         p = personne_valide
-        MoteurPersistence.add_personne(p, fichier_arbre)
+        MoteurPersistence.create_personne(p, fichier_arbre)
         arbre = MoteurPersistence.load(fichier_arbre)
 
         personne = next((p for p in arbre.personnes if p.id == "p_001"),None)
@@ -46,19 +46,19 @@ class TestCreatePersonne:
         """Vérifie qu'une ValidationError est bien levée lors de la création d'une personne sans id"""
         p = personne_invalide_sans_id
         with pytest.raises(ValidationError):
-            MoteurPersistence.add_personne(p, fichier_arbre)
+            MoteurPersistence.create_personne(p, fichier_arbre)
 
 
     def test_creer_personne_avec_id_invalide_echoue(self,fichier_arbre):
-        """Vérifie qu'une ValidationError est bien levée lors de la création d'une personne avec un id invalide (None ou \"\")"""
+        """Vérifie qu'une ValidationError est bien levée lors de la création d'une personne avec un id invalide (None ou "")"""
     
         with pytest.raises(ValidationError):
             p = Personne(id=None)
-            MoteurPersistence.add_personne(p, fichier_arbre)
+            MoteurPersistence.create_personne(p, fichier_arbre)
 
         with pytest.raises(ValidationError):
-            p = Personne(id=None)
-            MoteurPersistence.add_personne(p, fichier_arbre)
+            p = Personne(id="")
+            MoteurPersistence.create_personne(p, fichier_arbre)
 
 
 class TestReadPersonne:
@@ -66,27 +66,21 @@ class TestReadPersonne:
 
     def test_lire_personne_avec_id_valide_et_ressource_presente(self, personne_minimale,fichier_arbre):
         """Vérifie qu'un personne valide peut être lue par ses atributs"""
-        MoteurPersistence.add_personne(personne_minimale, fichier_arbre)
-        arbre = MoteurPersistence.load(fichier_arbre)
-
-        p = MoteurPersistence.get_personne(personne_minimale.id)
+        MoteurPersistence.create_personne(personne_minimale, fichier_arbre)
+        p = MoteurPersistence.get_personne(personne_minimale.id,fichier_arbre)
 
         assert p is not None
         assert p.id == "p_002"
 
     def test_lire_personne_avec_id_valide_et_ressource_manquante(self,fichier_arbre):
         """Vérifie que la lecture d'une personne avec un id valide mais inexistante lève une KeyError ou une ValueError"""
-        arbre = MoteurPersistence.load(fichier_arbre)
-
         with pytest.raises((KeyError,ValueError)):
-            MoteurPersistence.get_personne("p_inexistant")
+            MoteurPersistence.get_personne("p_inexistant",fichier_arbre)
 
     def test_lire_personne_avec_id_invalide(self,fichier_arbre):
         """Vérifie que la lecture d'une personne avec un id invalide lève une ValidationError"""
-        arbre = MoteurPersistence.load(fichier_arbre)
-
         with pytest.raises(ValidationError):
-            MoteurPersistence.get_personne("")
+            MoteurPersistence.get_personne("",fichier_arbre)
 
 
 class TestUpdatePersonne:
