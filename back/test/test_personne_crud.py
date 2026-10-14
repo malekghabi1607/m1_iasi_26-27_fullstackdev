@@ -93,10 +93,7 @@ class TestUpdatePersonne:
     """Tests pour la mise à jour des informations d'une personne."""
 
     def test_mettre_a_jour_nom_famille(self, fichier_arbre, personne_valide):
-        """
-        TODO: Vérifier qu'une personne peut être mise à jour avec un nouveau nom de famille.
-        Indice : Créer une Personne, puis modifier son nom_famille et vérifier la mise à jour.
-        """
+        """Vérifie qu'une personne peut être mise à jour avec un nouveau nom de famille."""
         nom = "Rousseau"
         update_nom_famille(fichier_arbre, personne_valide, nom)
         apres = MoteurPersistence.load(fichier_arbre)
@@ -105,10 +102,7 @@ class TestUpdatePersonne:
                 assert personne.nom_famille == nom
 
     def test_mettre_a_jour_prenom(self, fichier_arbre, personne_valide):
-        """
-        TODO: Vérifier qu'une personne peut être mise à jour avec un nouveau prénom.
-        Indice : Créer une Personne, puis modifier son prenom et vérifier la mise à jour.
-        """
+        """Vérifie qu'une personne peut être mise à jour avec un nouveau prénom."""
         prenom = "Rayane"
         update_prenom(fichier_arbre, personne_valide, prenom)
         apres = MoteurPersistence.load(fichier_arbre)
@@ -117,10 +111,7 @@ class TestUpdatePersonne:
                 assert personne.prenom == prenom
 
     def test_mettre_a_jour_date_naissance(self, fichier_arbre, personne_valide):
-        """
-        TODO: Vérifier qu'une personne peut être mise à jour avec une nouvelle date de naissance.
-        Indice : Créer une Personne, puis modifier sa date_naissance et vérifier la mise à jour.
-        """
+        """Vérifie qu'une personne peut être mise à jour avec une nouvelle date de naissance."""
         date_naissance = "1999-09-01"
         update_date_naissance(fichier_arbre, personne_valide, date_naissance)
         apres = MoteurPersistence.load(fichier_arbre)
@@ -129,10 +120,7 @@ class TestUpdatePersonne:
                 assert personne.date_naissance == date_naissance
 
     def test_mettre_a_jour_avec_date_invalide_echoue(self, fichier_arbre, personne_valide):
-        """
-        TODO: Vérifier qu'une ValidationError est levée si une date invalide est assignée.
-        Indice : Utiliser pytest.raises(ValidationError) et assigner une date comme "12/05/1990".
-        """
+        """Vérifie qu'une ValidationError est levée si une date invalide est assignée."""
         date_invalide = "001-92-8"
         with pytest.raises(ValidationError):
             update_date_naissance(fichier_arbre, personne_valide, date_invalide)
@@ -144,20 +132,14 @@ class TestDeletePersonne:
     """Tests pour la suppression d'une personne."""
 
     def test_supprimer_personne(self, fichier_arbre, personne_valide):
-        """
-        TODO: Vérifier qu'une personne peut être supprimée (ex: en utilisant del ou une méthode dédiée).
-        Indice : Si une liste de personnes est utilisée, vérifier que la personne est retirée.
-        """
+        """Vérifie qu'une personne peut être supprimée."""
         delete_personne(fichier_arbre, personne_valide)
         apres = MoteurPersistence.load(fichier_arbre)
         ids = [personne.id for personne in apres.personnes]
         assert personne_valide.id not in ids
 
     def test_supprimer_personne_inexistante_echoue(self, fichier_arbre):
-        """
-        TODO: Vérifier qu'une erreur est levée si on tente de supprimer une personne inexistante.
-        Indice : Utiliser pytest.raises() avec une exception appropriée (ex: ValueError).
-        """
+        """Vérifie qu'une erreur est levée si on tente de supprimer une personne inexistante."""
         inexistant = Personne(id="p_999")
         with pytest.raises(ValueError):
             delete_personne(fichier_arbre, inexistant)
