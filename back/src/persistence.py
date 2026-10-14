@@ -91,7 +91,7 @@ class MoteurPersistence:
         pass
 
     def get_lien(file_path:str,lien_id):
-        """Récupère une personne par son ID depuis le fichier spécifié."""
+        """Récupère un lien par son ID depuis le fichier spécifié."""
         arbre = MoteurPersistence.load(file_path)
         for lien in arbre.liens:
             if lien.id == lien:
