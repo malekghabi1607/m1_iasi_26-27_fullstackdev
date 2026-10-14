@@ -155,3 +155,22 @@ def fichier_arbre_valide(tmp_path):
     MoteurPersistence.dump(arbre, file_path)
 
     return file_path
+
+
+@pytest.fixture
+def fichier_arbre_avec_lien(tmp_path):
+    arbre = ArbreGenealogique(
+        personnes=[
+            Personne(id="p_001", prenom="Jean"),
+            Personne(id="p_002", prenom="Marie"),
+        ],
+        liens=[
+            Lien(id="l_001", source="p_001", destination="p_002", type=LienType.PARENT),
+        ],
+    )
+
+    file_path = tmp_path / "test_tree_liens.json"
+    MoteurPersistence.dump(arbre, file_path)
+
+    return file_path
+
