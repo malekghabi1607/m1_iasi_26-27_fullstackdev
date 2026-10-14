@@ -97,8 +97,14 @@ class MoteurPersistence:
         return arbre
 
 
-    def get_lien(lien_id):
-        pass
+    @staticmethod
+    def get_lien(file_path: str, lien_id: str) -> Lien:
+        """Récupère un lien par son ID depuis le fichier spécifié."""
+        arbre = MoteurPersistence.load(file_path)
+        for lien in arbre.liens:
+            if lien.id == lien_id:
+                return lien
+
 
     def update_lien(lien_id):
         pass
