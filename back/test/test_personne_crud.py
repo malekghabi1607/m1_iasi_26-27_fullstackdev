@@ -111,28 +111,40 @@ class TestUpdatePersonne:
         TODO: Vérifier qu'une personne peut être mise à jour avec un nouveau nom de famille.
         Indice : Créer une Personne, puis modifier son nom_famille et vérifier la mise à jour.
         """
-        pass
+        personne = Personne(id="123", nom_famille="Dupont")
+        personne.nom_famille = "Martin"
+        assert personne.nom_famille == "Martin"
+
 
     def test_mettre_a_jour_prenom(self):
         """
         TODO: Vérifier qu'une personne peut être mise à jour avec un nouveau prénom.
         Indice : Créer une Personne, puis modifier son prenom et vérifier la mise à jour.
         """
-        pass
+        personne = Personne(id="123", prenom="Jean")
+        personne.prenom = "Paul"
+        assert personne.prenom == "Paul"
+
 
     def test_mettre_a_jour_date_naissance(self):
         """
         TODO: Vérifier qu'une personne peut être mise à jour avec une nouvelle date de naissance.
         Indice : Créer une Personne, puis modifier sa date_naissance et vérifier la mise à jour.
         """
-        pass
+           
+        personne = Personne(id="123", date_naissance="2000-05-15")
+        personne.date_naissance = "1985"
+        assert personne.date_naissance == "1985"
+
 
     def test_mettre_a_jour_avec_date_invalide_echoue(self):
         """
         TODO: Vérifier qu'une ValidationError est levée si une date invalide est assignée.
         Indice : Utiliser pytest.raises(ValidationError) et assigner une date comme "12/05/1990".
         """
-        pass
+        personne = Personne(id="123", date_naissance="1990-05-15")
+        with pytest.raises(ValidationError):
+            personne.date_naissance = "12/05/1990"
 
 
 class TestDeletePersonne:
