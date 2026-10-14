@@ -7,10 +7,6 @@ name = "pypi"
 pydantic = "*"
 fastapi = "*"
 uvicorn = "*"
+pytest = "*"
 
 [dev-packages]
-pytest = "*"
-httpx = "*"
-
-[requires]
-python_version = "3.12"
