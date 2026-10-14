@@ -90,11 +90,20 @@ class MoteurPersistence:
     def create_lien(lien_id):
         pass
 
-    def get_lien(lien_id):
-        pass
+    def get_lien(file_path:str,lien_id):
+        """Récupère une personne par son ID depuis le fichier spécifié."""
+        arbre = MoteurPersistence.load(file_path)
+        for lien in arbre.liens:
+            if lien.id == lien:
+                return lien
+        raise ValueError(f"Lien avec l'ID {lien} non trouvée.")
+
 
     def update_lien(lien_id):
         pass
 
-    def delete_lien(lien_id):
-        pass
+    def delete_lien(file_path:str,lien_id):
+        """Supprime un lien par son ID dans le fichier spécifié."""
+        arbre = MoteurPersistence.load(file_path)
+        arbre.liens = [p for p in arbre.liens if p.id != lien_id]
+        MoteurPersistence.dump(arbre, file_path)
