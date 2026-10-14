@@ -8,20 +8,25 @@ import pytest
 from pydantic import ValidationError
 
 from src.models import Lien, LienType
+from src.persistence import MoteurPersistence
 
 
 class TestCreateLien:
     """Tests pour la création d'un lien."""
 
-    def test_creer_lien_avec_champs_obligatoires(self):
+    def test_creer_lien_avec_champs_obligatoires(self, fichier_arbre_avec_lien):
+
         """
         TODO: Vérifier qu'un lien peut être créé avec les champs obligatoires (id, source, destination, type).
         Indice : Utiliser Lien(id="1", source="p1", destination="p2", type=LienType.PARENT).
         """
-        lien = Lien(id="1", source="p1", destination="p2", type=LienType.PARENT)
+        nouveau_lien = Lien(id="l_002", source="p_002", destination="p_001", type=LienType.PARTENAIRE)
+        MoteurPersistence.create_lien(fichier_arbre_avec_lien, nouveau_lien)
 
-        assert lien.id == "1"
-        assert lien.type == LienType.PARENT
+        arbre_charge = MoteurPersistence.load(fichier_arbre_avec_lien)
+        assert len(arbre_charge.liens) == 2
+        assert any(l.id == "l_002" for l in arbre_charge.liens)
+
 
 
     def test_creer_lien_sans_id_echoue(self):
