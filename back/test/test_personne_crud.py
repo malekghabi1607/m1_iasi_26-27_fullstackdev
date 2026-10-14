@@ -24,8 +24,6 @@ class TestCreatePersonne:
         assert personne.nom_famille is None
         assert personne.prenom is None
 
-        pass
-
     def test_creer_personne_avec_tous_les_champs(self):
         """
         TODO: Vérifier qu'une personne peut être créée avec tous les champs valides.
@@ -47,7 +45,6 @@ class TestCreatePersonne:
         assert personne.date_naissance == "2000-05-15"
         assert personne.date_mort == "2020"
 
-        pass
 
     def test_creer_personne_sans_id_echoue(self):
         """
@@ -57,7 +54,6 @@ class TestCreatePersonne:
         with pytest.raises(ValidationError):
             Personne()
 
-        pass
 
     def test_creer_personne_avec_id_invalide_echoue(self):
         """
@@ -69,32 +65,42 @@ class TestCreatePersonne:
         with pytest.raises(ValidationError):
             Personne(id="")
 
-        pass
 
 
 class TestReadPersonne:
     """Tests pour la lecture des informations d'une personne."""
 
-    def test_lire_personne_avec_id_valide_et_ressource_presente(self):
+    def test_lire_personne_avec_id_valide_et_ressource_presente(self, arbre_valide):
         """
         TODO: Vérifier qu'une personne peut être lue avec un ID valide et que la ressource existe.
         Indice : Créer une Personne(id="123") et vérifier que personne.id == "123".
         """
-        pass
+        personnes = {p.id: p for p in arbre_valide.personnes}
 
-    def test_lire_personne_avec_id_valide_et_ressource_manquante(self):
+        assert personnes["p_001"].prenom == "Jean"
+
+
+    def test_lire_personne_avec_id_valide_et_ressource_manquante(self, arbre_valide):
         """
         TODO: Vérifier qu'une erreur est levée si l'ID est valide mais que la ressource n'existe pas.
         Indice : Utiliser pytest.raises() avec une exception appropriée (ex: KeyError ou ValueError).
         """
-        pass
+        personnes = {p.id: p for p in arbre_valide.personnes}
+
+        with pytest.raises(KeyError):
+            personnes["p_999"]
+
 
     def test_lire_personne_avec_id_invalide(self):
         """
         TODO: Vérifier qu'une ValidationError est levée si l'ID est invalide (ex: None ou vide).
         Indice : Utiliser pytest.raises(ValidationError) et Personne(id=None) ou Personne(id="").
         """
-        pass
+        with pytest.raises(ValidationError):
+            Personne(id=None)
+        with pytest.raises(ValidationError):
+            Personne(id="")
+
 
 
 class TestUpdatePersonne:
