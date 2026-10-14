@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
-from src.models import ArbreGenealogique
+from src.models import ArbreGenealogique, Personne, Lien
+from pydantic import ValidationError
 
 
 class MoteurPersistence:
@@ -24,17 +25,66 @@ class MoteurPersistence:
             return ArbreGenealogique.model_validate_json(f.read())
 
     # === CRUD Personnes === #
-    def create_personne(personne_id):
-        pass
+    @staticmethod
+    def create_personne(file_path: str, personne) -> ArbreGenealogique:
+        """Ajoute une personne à l'arbre généalogique dans le fichier spécifié."""
+        if not isinstance(personne, Personne):
+            raise ValueError("L'argument 'personne' doit être une instance de Personne.")
 
-    def get_personne(personne_id):
-        pass
+        arbre = MoteurPersistence.load(file_path)
 
-    def update_personne(personne_id):
-        pass
+        if any(p.id == personne.id for p in arbre.personnes):
+            raise ValueError('Il existe déjà une personne avec cet id')
 
-    def delete_personne(personne_id):
-        pass
+        arbre.personnes.append(personne)
+        MoteurPersistence.dump(arbre, file_path)
+        return arbre
+
+    @staticmethod
+    def get_personne(file_path: str, personne_id: str) -> Personne:
+        """Récupère une personne par son ID depuis le fichier spécifié."""
+        arbre = MoteurPersistence.load(file_path)
+        for personne in arbre.personnes:
+            if personne.id == personne_id:
+                return personne
+        raise ValueError(f"Personne avec l'ID {personne_id} non trouvée.")
+
+    @staticmethod
+    def update_personne(file_path: str, personne_id: str, updates: dict) -> Personne:
+        """Met à jour une personne par son ID dans le fichier spécifié avec un dictionnaire de mises à jour."""
+        arbre = MoteurPersistence.load(file_path)
+
+        # Trouver la personne à mettre à jour
+        personne_index = None
+        for i, personne in enumerate(arbre.personnes):
+            if personne.id == personne_id:
+                personne_index = i
+                break
+
+        if personne_index is None:
+            raise ValueError(f"Personne avec l'ID {personne_id} non trouvée.")
+
+        # Créer une copie de la personne avec les mises à jour
+        personne_dict = arbre.personnes[personne_index].model_dump()
+        personne_dict.update(updates)
+
+        # Valider les données avec Pydantic
+        try:
+            personne_update = Personne(**personne_dict)
+        except ValidationError as e:
+            raise e
+
+        # Mettre à jour l'arbre
+        arbre.personnes[personne_index] = personne_update
+        MoteurPersistence.dump(arbre, file_path)
+        return personne_update
+
+    @staticmethod
+    def delete_personne(file_path: str, personne_id: str) -> None:
+        """Supprime une personne par son ID dans le fichier spécifié."""
+        arbre = MoteurPersistence.load(file_path)
+        arbre.personnes = [p for p in arbre.personnes if p.id != personne_id]
+        MoteurPersistence.dump(arbre, file_path)
 
     # === CRUD liens === #
     def create_lien(lien_id):
