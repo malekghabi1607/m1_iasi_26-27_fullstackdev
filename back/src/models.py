@@ -19,7 +19,8 @@ class Personne(BaseModel):
             complet ISO 8601 (AAAA-MM-JJ) ou juste l'année (AAAA). Par défaut à None.
         nationalite (Optional[str]): La nationalité de la personne. Par défaut à None.
     """
-    id: str = Field(..., description="Unique identifier for the person (e.g., 'p_001').")
+    # min_length=1 : refuse un id vide ("") car l'id sert à relier les personnes via les liens
+    id: str = Field(...,  min_length=1 , description="Unique identifier for the person (e.g., 'p_001').")
     nom_famille: Optional[str] = None
     prenom: Optional[str] = None
     lieu_naissance: Optional[str] = None
