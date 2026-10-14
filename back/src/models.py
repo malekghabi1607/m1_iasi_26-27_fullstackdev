@@ -8,7 +8,10 @@ class Personne(BaseModel):
     Représente une personne avec ses informations biographiques de base.
 
     Attributes:
-        id (str): Identifiant unique de la personne (ex. : 'p_001'). Requis.
+                id (str): Identifiant unique de la personne (ex. : 'p_001'). Requis.
+            Ne peut pas être vide (min_length=1) car il sert à relier
+            les personnes entre elles via les liens.
+
         nom_famille (str): Le nom de famille de la personne. Requis.
         prenom (str): Le prénom de la personne. Requis.
         lieu_naissance (str): Le lieu de naissance de la personne. Requis.
