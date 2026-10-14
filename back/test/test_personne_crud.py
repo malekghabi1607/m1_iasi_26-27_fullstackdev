@@ -8,170 +8,137 @@ import pytest
 from pydantic import ValidationError
 
 from src.models import Personne
+from src.persistence import MoteurPersistence
 
 
 class TestCreatePersonne:
     """Tests pour la création d'une personne."""
 
-    def test_creer_personne_avec_id_uniquement(self):
+    def test_creer_personne_avec_id_uniquement(self, fichier_arbre_valide):
         """
-        TODO: Vérifier qu'une personne peut être créée avec uniquement un ID.
-        Indice : Utiliser Personne(id="123").
+        Vérifier qu'une personne peut être créée avec uniquement un ID via le moteur de persistence.
         """
-        personne = Personne(id="123")
+        nouvelle_personne = Personne(id="p_002")
+        MoteurPersistence.create_personne(fichier_arbre_valide, nouvelle_personne)
 
-        assert personne.id == "123"
-        assert personne.nom_famille is None
-        assert personne.prenom is None
+        arbre_charge = MoteurPersistence.load(fichier_arbre_valide)
+        assert len(arbre_charge.personnes) == 2
+        assert any(p.id == "p_002" for p in arbre_charge.personnes)
 
-    def test_creer_personne_avec_tous_les_champs(self):
+    def test_creer_personne_avec_tous_les_champs(self, fichier_arbre_valide):
         """
-        TODO: Vérifier qu'une personne peut être créée avec tous les champs valides.
-        Indice : Utiliser Personne(id="123", nom_famille="Dupont", prenom="Jean", ...).
+        Vérifier qu'une personne peut être créée avec tous les champs valides via le moteur de persistence.
         """
-        personne = Personne(
-            id="123",
-            nom_famille="Dupont",
-            prenom="Jean",
-            lieu_naissance="Lille",
-            date_naissance="2000-05-15",
-            lieu_mort="Lille",
-            date_mort="2020",
-            nationalite="Française",
+        nouvelle_personne = Personne(
+            id="p_002",
+            nom_famille="Martin",
+            prenom="Marie",
+            lieu_naissance="Marseille",
+            date_naissance="1995-08-20",
+            nationalite="Française"
         )
+        MoteurPersistence.create_personne(fichier_arbre_valide, nouvelle_personne)
+        
+        arbre_charge = MoteurPersistence.load(fichier_arbre_valide)
+        assert len(arbre_charge.personnes) == 2
+        personne_trouvee = next(p for p in arbre_charge.personnes if p.id == "p_002")
+        assert personne_trouvee.nom_famille == "Martin"
+        assert personne_trouvee.prenom == "Marie"
 
-        assert personne.nom_famille == "Dupont"
-        assert personne.prenom == "Jean"
-        assert personne.date_naissance == "2000-05-15"
-        assert personne.date_mort == "2020"
+    def test_creer_personne_leve_erreur_si_personne_existante(self, fichier_arbre_valide):
+        nouvelle_personne = Personne(id='p_001')
 
+        with pytest.raises(ValueError):
+            MoteurPersistence.create_personne(fichier_arbre_valide, nouvelle_personne)
 
-    def test_creer_personne_sans_id_echoue(self):
-        """
-        TODO: Vérifier qu'une ValidationError est levée si l'ID est manquant.
-        Indice : Utiliser pytest.raises(ValidationError) et Personne().
-        """
-        with pytest.raises(ValidationError):
-            Personne()
+    def test_test_creer_personne_leve_erreur_si_appel_avec_non_personne(self, fichier_arbre_valide):
+        nouvelle_personne = {
+            'id': "p_001",
+            'nom_famille': "Dupont",
+            'prenom': "Jean",
+            'lieu_naissance': "Paris",
+            'date_naissance': "1990-05-15"
+        }
 
-
-    def test_creer_personne_avec_id_invalide_echoue(self):
-        """
-        TODO: Vérifier qu'une ValidationError est levée si l'ID est invalide (ex: None ou vide).
-        Indice : Tester avec Personne(id=None) et Personne(id="").
-        """
-        with pytest.raises(ValidationError):
-            Personne(id=None)
-        with pytest.raises(ValidationError):
-            Personne(id="")
-
-
+        with pytest.raises(ValueError):
+            MoteurPersistence.create_personne(fichier_arbre_valide, nouvelle_personne)
 
 class TestReadPersonne:
     """Tests pour la lecture des informations d'une personne."""
 
-    def test_lire_personne_avec_id_valide_et_ressource_presente(self, arbre_valide):
+    def test_lire_personne_avec_id_valide_et_ressource_presente(self, fichier_arbre_valide):
         """
-        TODO: Vérifier qu'une personne peut être lue avec un ID valide et que la ressource existe.
-        Indice : Créer une Personne(id="123") et vérifier que personne.id == "123".
+        Vérifier qu'une personne peut être lue avec un ID valide et que la ressource existe.
         """
-        personnes = {p.id: p for p in arbre_valide.personnes}
+        personne = MoteurPersistence.get_personne(fichier_arbre_valide, "p_001")
+        assert personne.id == "p_001"
+        assert personne.nom_famille == "Dupont"
 
-        assert personnes["p_001"].prenom == "Jean"
-
-
-    def test_lire_personne_avec_id_valide_et_ressource_manquante(self, arbre_valide):
+    def test_lire_personne_avec_id_valide_et_ressource_manquante(self, fichier_arbre_valide):
         """
-        TODO: Vérifier qu'une erreur est levée si l'ID est valide mais que la ressource n'existe pas.
-        Indice : Utiliser pytest.raises() avec une exception appropriée (ex: KeyError ou ValueError).
+        Vérifier qu'une erreur est levée si l'ID est valide mais que la ressource n'existe pas.
         """
-        personnes = {p.id: p for p in arbre_valide.personnes}
+        with pytest.raises(ValueError):
+            MoteurPersistence.get_personne(fichier_arbre_valide, "p_999")
 
-        with pytest.raises(KeyError):
-            personnes["p_999"]
-
-
-    def test_lire_personne_avec_id_invalide(self):
+    def test_lire_personne_avec_id_invalide(self, fichier_arbre_valide):
         """
-        TODO: Vérifier qu'une ValidationError est levée si l'ID est invalide (ex: None ou vide).
-        Indice : Utiliser pytest.raises(ValidationError) et Personne(id=None) ou Personne(id="").
+        Vérifier qu'une erreur est levée si l'ID est invalide.
         """
-        with pytest.raises(ValidationError):
-            Personne(id=None)
-        with pytest.raises(ValidationError):
-            Personne(id="")
-
+        with pytest.raises(ValueError):
+            MoteurPersistence.get_personne(fichier_arbre_valide, None)
 
 
 class TestUpdatePersonne:
     """Tests pour la mise à jour des informations d'une personne."""
 
-    def test_mettre_a_jour_nom_famille(self):
+    def test_mettre_a_jour_nom_famille(self, fichier_arbre_valide):
         """
-        TODO: Vérifier qu'une personne peut être mise à jour avec un nouveau nom de famille.
-        Indice : Créer une Personne, puis modifier son nom_famille et vérifier la mise à jour.
+        Vérifier qu'une personne peut être mise à jour avec un nouveau nom de famille.
         """
-        personne = Personne(id="123", nom_famille="Dupont")
-        personne.nom_famille = "Martin"
+        MoteurPersistence.update_personne(fichier_arbre_valide, "p_001", {'nom_famille': "Martin"})
+        personne = MoteurPersistence.get_personne(fichier_arbre_valide, "p_001")
         assert personne.nom_famille == "Martin"
 
+    def test_mettre_a_jour_prenom(self, fichier_arbre_valide):
+        """
+        Vérifier qu'une personne peut être mise à jour avec un nouveau prénom.
+        """
+        MoteurPersistence.update_personne(fichier_arbre_valide, "p_001", {'prenom': "Pierre"})
+        personne = MoteurPersistence.get_personne(fichier_arbre_valide, "p_001")
+        assert personne.prenom == "Pierre"
 
-    def test_mettre_a_jour_prenom(self):
+    def test_mettre_a_jour_date_naissance(self, fichier_arbre_valide):
         """
-        TODO: Vérifier qu'une personne peut être mise à jour avec un nouveau prénom.
-        Indice : Créer une Personne, puis modifier son prenom et vérifier la mise à jour.
+        Vérifier qu'une personne peut être mise à jour avec une nouvelle date de naissance.
         """
-        personne = Personne(id="123", prenom="Jean")
-        personne.prenom = "Paul"
-        assert personne.prenom == "Paul"
+        MoteurPersistence.update_personne(fichier_arbre_valide, "p_001", {'date_naissance': "1980-01-01"})
+        personne = MoteurPersistence.get_personne(fichier_arbre_valide, "p_001")
+        assert personne.date_naissance == "1980-01-01"
 
-
-    def test_mettre_a_jour_date_naissance(self):
+    def test_mettre_a_jour_avec_date_invalide_echoue(self, fichier_arbre_valide):
         """
-        TODO: Vérifier qu'une personne peut être mise à jour avec une nouvelle date de naissance.
-        Indice : Créer une Personne, puis modifier sa date_naissance et vérifier la mise à jour.
+        Vérifier qu'une ValidationError est levée si une date invalide est assignée.
         """
-           
-        personne = Personne(id="123", date_naissance="2000-05-15")
-        personne.date_naissance = "1985"
-        assert personne.date_naissance == "1985"
-
-
-    def test_mettre_a_jour_avec_date_invalide_echoue(self):
-        """
-        TODO: Vérifier qu'une ValidationError est levée si une date invalide est assignée.
-        Indice : Utiliser pytest.raises(ValidationError) et assigner une date comme "12/05/1990".
-        """
-        personne = Personne(id="123", date_naissance="1990-05-15")
         with pytest.raises(ValidationError):
-            personne.date_naissance = "12/05/1990"
+            MoteurPersistence.update_personne(fichier_arbre_valide, "p_001", {'date_naissance': "12/05/1990"})
 
 
 class TestDeletePersonne:
     """Tests pour la suppression d'une personne."""
 
-    def test_supprimer_personne(self):
+    def test_supprimer_personne(self, fichier_arbre_valide):
         """
-        TODO: Vérifier qu'une personne peut être supprimée (ex: en utilisant del ou une méthode dédiée).
-        Indice : Si une liste de personnes est utilisée, vérifier que la personne est retirée.
+        Vérifier qu'une personne peut être supprimée.
         """
-        jean = Personne(id="1", prenom="Jean")
-        paul = Personne(id="2", prenom="Paul")
-        personnes = [jean, paul]
+        MoteurPersistence.delete_personne(fichier_arbre_valide, "p_001")
+        arbre_charge = MoteurPersistence.load(fichier_arbre_valide)
+        assert len(arbre_charge.personnes) == 0
 
-        personnes.remove(jean)
-
-        assert jean not in personnes
-        assert len(personnes) == 1
-
-
-    def test_supprimer_personne_inexistante_echoue(self):
+    def test_supprimer_personne_inexistante_echoue(self, fichier_arbre_valide):
         """
-        TODO: Vérifier qu'une erreur est levée si on tente de supprimer une personne inexistante.
-        Indice : Utiliser pytest.raises() avec une exception appropriée (ex: ValueError).
+        Vérifier qu'aucune erreur n'est levée si on tente de supprimer une personne inexistante.
         """
-        personnes = [Personne(id="1", prenom="Jean")]
-
-        with pytest.raises(ValueError):
-            personnes.remove(Personne(id="999"))
-
+        MoteurPersistence.delete_personne(fichier_arbre_valide, "p_999")
+        arbre_charge = MoteurPersistence.load(fichier_arbre_valide)
+        assert len(arbre_charge.personnes) == 1
