@@ -3,6 +3,7 @@
 import pytest
 
 from src.models import ArbreGenealogique, Lien, LienType, Personne
+from src.persistence import MoteurPersistence
 
 
 # Fixtures pour Personne
@@ -88,3 +89,11 @@ def arbre_invalide_sans_personnes():
 @pytest.fixture
 def arbre_invalide_sans_liens():
     return {"personnes": []}
+
+
+@pytest.fixture
+def fichier_arbre(tmp_path, arbre_valide):
+    """Écrit arbre_valide dans un fichier temporaire et renvoie son chemin."""
+    chemin = tmp_path / "arbre.json"
+    MoteurPersistence.dump(arbre_valide, str(chemin))
+    return str(chemin)
