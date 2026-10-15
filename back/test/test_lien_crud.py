@@ -89,12 +89,13 @@ class TestReadLien:
         assert lien.source == "p_001"
 
 
-    def test_lire_lien_avec_id_valide_et_ressource_manquante(self):
+    def test_lire_lien_avec_id_valide_et_ressource_manquante(self, fichier_arbre_avec_lien):
         """
         TODO: Vérifier qu'une erreur est levée si l'ID est valide mais que la ressource n'existe pas.
         Indice : Utiliser pytest.raises() avec une exception appropriée (ex: KeyError ou ValueError).
         """
-        pass
+        with pytest.raises(ValueError):
+            MoteurPersistence.get_lien(fichier_arbre_avec_lien, "l_999")
 
     def test_lire_lien_avec_id_invalide(self):
         """
