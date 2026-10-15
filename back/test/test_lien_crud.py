@@ -97,59 +97,71 @@ class TestReadLien:
         with pytest.raises(ValueError):
             MoteurPersistence.get_lien(fichier_arbre_avec_lien, "l_999")
 
-    def test_lire_lien_avec_id_invalide(self):
+    def test_lire_lien_avec_id_invalide(self, fichier_arbre_avec_lien):
         """
         TODO: Vérifier qu'une ValidationError est levée si l'ID est invalide (ex: None ou vide).
         Indice : Utiliser pytest.raises(ValidationError) et Lien(id=None, ...).
         """
-        pass
+        with pytest.raises(ValueError):
+            MoteurPersistence.get_lien(fichier_arbre_avec_lien, None)
 
 
 class TestUpdateLien:
     """Tests pour la mise à jour des informations d'un lien."""
 
-    def test_mettre_a_jour_type_lien(self):
+    def test_mettre_a_jour_type_lien(self, fichier_arbre_avec_lien):
         """
         TODO: Vérifier qu'un lien peut être mis à jour avec un nouveau type valide.
         Indice : Créer un Lien, puis modifier son type et vérifier la mise à jour.
         """
-        pass
+        MoteurPersistence.update_lien(fichier_arbre_avec_lien, "l_001", {"type": LienType.PARTENAIRE})
+        lien = MoteurPersistence.get_lien(fichier_arbre_avec_lien, "l_001")
+        assert lien.type == LienType.PARTENAIRE
 
-    def test_mettre_a_jour_source_lien(self):
+    def test_mettre_a_jour_source_lien(self, fichier_arbre_avec_lien):
         """
         TODO: Vérifier qu'un lien peut être mis à jour avec une nouvelle source.
         Indice : Créer un Lien, puis modifier sa source et vérifier la mise à jour.
         """
-        pass
+        MoteurPersistence.update_lien(fichier_arbre_avec_lien, "l_001", {"source": "p_002"})
+        lien = MoteurPersistence.get_lien(fichier_arbre_avec_lien, "l_001")
+        assert lien.source == "p_002"
 
-    def test_mettre_a_jour_destination_lien(self):
+    def test_mettre_a_jour_destination_lien(self, fichier_arbre_avec_lien):
         """
         TODO: Vérifier qu'un lien peut être mis à jour avec une nouvelle destination.
         Indice : Créer un Lien, puis modifier sa destination et vérifier la mise à jour.
         """
-        pass
+        MoteurPersistence.update_lien(fichier_arbre_avec_lien, "l_001", {"destination": "p_001"})
+        lien = MoteurPersistence.get_lien(fichier_arbre_avec_lien, "l_001")
+        assert lien.destination == "p_001"
 
-    def test_mettre_a_jour_avec_type_invalide_echoue(self):
+    def test_mettre_a_jour_avec_type_invalide_echoue(self, fichier_arbre_avec_lien):
         """
         TODO: Vérifier qu'une ValidationError est levée si un type invalide est assigné.
         Indice : Utiliser pytest.raises(ValidationError) et assigner un type comme "ami".
         """
-        pass
+        with pytest.raises(ValidationError):
+            MoteurPersistence.update_lien(fichier_arbre_avec_lien, "l_001", {"type": "ami"})
 
 
 class TestDeleteLien:
     """Tests pour la suppression d'un lien."""
 
-    def test_supprimer_lien(self):
+    def test_supprimer_lien(self, fichier_arbre_avec_lien):
         """
         TODO: Vérifier qu'un lien peut être supprimé (ex: en utilisant del ou une méthode dédiée).
         Indice : Si une liste de liens est utilisée, vérifier que le lien est retiré.
         """
-        pass
+        MoteurPersistence.delete_lien(fichier_arbre_avec_lien, "l_001")
+        arbre_charge = MoteurPersistence.load(fichier_arbre_avec_lien)
+        assert len(arbre_charge.liens) == 0
 
-    def test_supprimer_lien_inexistant_echoue(self):
+    def test_supprimer_lien_inexistant_echoue(self, fichier_arbre_avec_lien):
         """
         TODO: Vérifier qu'une erreur est levée si on tente de supprimer un lien inexistant.
         Indice : Utiliser pytest.raises() avec une exception appropriée (ex: ValueError).
         """
-        pass
+        MoteurPersistence.delete_lien(fichier_arbre_avec_lien, "l_999")
+        arbre_charge = MoteurPersistence.load(fichier_arbre_avec_lien)
+        assert len(arbre_charge.liens) == 1
