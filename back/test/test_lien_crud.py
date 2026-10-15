@@ -123,18 +123,18 @@ class TestUpdateLien:
         TODO: Vérifier qu'un lien peut être mis à jour avec une nouvelle source.
         Indice : Créer un Lien, puis modifier sa source et vérifier la mise à jour.
         """
-        MoteurPersistence.update_lien(fichier_arbre_avec_lien, "l_001", {"source": "p_002"})
+        MoteurPersistence.update_lien(fichier_arbre_avec_lien, "l_001", {"source": "p_003"})
         lien = MoteurPersistence.get_lien(fichier_arbre_avec_lien, "l_001")
-        assert lien.source == "p_002"
+        assert lien.source == "p_003"
 
     def test_mettre_a_jour_destination_lien(self, fichier_arbre_avec_lien):
         """
         TODO: Vérifier qu'un lien peut être mis à jour avec une nouvelle destination.
         Indice : Créer un Lien, puis modifier sa destination et vérifier la mise à jour.
         """
-        MoteurPersistence.update_lien(fichier_arbre_avec_lien, "l_001", {"destination": "p_001"})
+        MoteurPersistence.update_lien(fichier_arbre_avec_lien, "l_001", {"destination": "p_003"})
         lien = MoteurPersistence.get_lien(fichier_arbre_avec_lien, "l_001")
-        assert lien.destination == "p_001"
+        assert lien.destination == "p_003"
 
     def test_mettre_a_jour_avec_type_invalide_echoue(self, fichier_arbre_avec_lien):
         """

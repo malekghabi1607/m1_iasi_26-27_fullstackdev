@@ -19,6 +19,13 @@ def client(fichier_arbre_valide, monkeypatch):
     return TestClient(app)
 
 
+@pytest.fixture
+def client_liens(fichier_arbre_avec_lien, monkeypatch):
+    """Client HTTP de test, branché sur un fichier JSON temporaire qui contient un lien."""
+    monkeypatch.setattr(MoteurPersistence, "FICHIER", fichier_arbre_avec_lien)
+    return TestClient(app)
+
+
 class TestGetPersonnes:
     """Tests pour la route GET /personnes."""
 
@@ -31,45 +38,199 @@ class TestGetPersonnes:
 
 
 class TestGetPersonne:
-    """Tests pour la route GET /personne/{personne_id}."""
+    """Tests pour la route GET /personnes/{personne_id}."""
 
     def test_get_personne_existante(self, client):
-        """Vérifie que GET /personne/{id} renvoie la personne demandée."""
-        reponse = client.get("/personne/p_001")
+        """Vérifie que GET /personnes/{id} renvoie la personne demandée."""
+        reponse = client.get("/personnes/p_001")
 
         assert reponse.status_code == 200
         assert reponse.json()["id"] == "p_001"
         assert reponse.json()["nom_famille"] == "Dupont"
 
     def test_get_personne_inexistante_renvoie_404(self, client):
-        """Vérifie que GET /personne/{id} renvoie 404 si la personne n'existe pas."""
-        reponse = client.get("/personne/p_999")
+        """Vérifie que GET /personnes/{id} renvoie 404 si la personne n'existe pas."""
+        reponse = client.get("/personnes/p_999")
 
         assert reponse.status_code == 404
 
 
 class TestPostPersonne:
-    """Tests pour la route POST /personne."""
+    """Tests pour la route POST /personnes."""
 
     def test_post_personne_cree_la_personne(self, client):
-        """Vérifie que POST /personne ajoute la personne dans le fichier."""
-        reponse = client.post("/personne", json={"id": "p_002", "prenom": "Marie"})
+        """Vérifie que POST /personnes ajoute la personne dans le fichier."""
+        reponse = client.post("/personnes", json={"id": "p_002", "prenom": "Marie"})
 
-        assert reponse.status_code == 201
+        assert reponse.status_code == 200
         assert reponse.json()["id"] == "p_002"
-        assert client.get("/personne/p_002").json()["prenom"] == "Marie"
+        assert client.get("/personnes/p_002").json()["prenom"] == "Marie"
 
-    def test_post_personne_existante_renvoie_409(self, client):
-        """Vérifie que POST /personne renvoie 409 si l'id existe déjà."""
-        reponse = client.post("/personne", json={"id": "p_001"})
+    def test_post_personne_existante_renvoie_400(self, client):
+        """Vérifie que POST /personnes renvoie 400 si l'id existe déjà."""
+        reponse = client.post("/personnes", json={"id": "p_001"})
 
-        assert reponse.status_code == 409
+        assert reponse.status_code == 400
 
     def test_post_personne_invalide_renvoie_422(self, client):
-        """Vérifie que POST /personne renvoie 422 si les données sont invalides."""
-        reponse = client.post("/personne", json={"id": "p_003", "date_naissance": "12/05/1990"})
+        """Vérifie que POST /personnes renvoie 422 si les données sont invalides."""
+        reponse = client.post("/personnes", json={"id": "p_003", "date_naissance": "12/05/1990"})
 
         assert reponse.status_code == 422
+
+
+class TestPutPersonne:
+    """Tests pour la route PUT /personnes/{personne_id}."""
+
+    def test_put_personne_modifie_la_personne(self, client):
+        """Vérifie que PUT /personnes/{id} enregistre la modification."""
+        reponse = client.put("/personnes/p_001", json={"prenom": "Pierre"})
+
+        assert reponse.status_code == 200
+        assert client.get("/personnes/p_001").json()["prenom"] == "Pierre"
+
+    def test_put_personne_inexistante_renvoie_404(self, client):
+        """Vérifie que PUT /personnes/{id} renvoie 404 si la personne n'existe pas."""
+        reponse = client.put("/personnes/p_999", json={"prenom": "Pierre"})
+
+        assert reponse.status_code == 404
+
+    def test_put_personne_date_invalide_renvoie_422(self, client):
+        """Vérifie que PUT /personnes/{id} renvoie 422 si la nouvelle date est invalide."""
+        reponse = client.put("/personnes/p_001", json={"date_naissance": "12/05/1990"})
+
+        assert reponse.status_code == 422
+
+
+class TestDeletePersonne:
+    """Tests pour la route DELETE /personnes/{personne_id}."""
+
+    def test_delete_personne_supprime_la_personne(self, client):
+        """Vérifie que DELETE /personnes/{id} retire la personne du fichier."""
+        reponse = client.delete("/personnes/p_001")
+
+        assert reponse.status_code == 200
+        assert client.get("/personnes").json() == []
+
+    def test_delete_personne_inexistante_renvoie_404(self, client):
+        """Vérifie que DELETE /personnes/{id} renvoie 404 si la personne n'existe pas."""
+        reponse = client.delete("/personnes/p_999")
+
+        assert reponse.status_code == 404
+
+
+class TestGetLiens:
+    """Tests pour les routes GET /liens et GET /liens/{lien_id}."""
+
+    def test_get_liens_lit_le_fichier_de_donnees(self, client_liens):
+        """Vérifie que GET /liens renvoie les liens de FICHIER."""
+        reponse = client_liens.get("/liens")
+
+        assert reponse.status_code == 200
+        assert [l["id"] for l in reponse.json()] == ["l_001"]
+
+    def test_get_lien_existant(self, client_liens):
+        """Vérifie que GET /liens/{id} renvoie le lien demandé."""
+        reponse = client_liens.get("/liens/l_001")
+
+        assert reponse.status_code == 200
+        assert reponse.json()["source"] == "p_001"
+
+    def test_get_lien_inexistant_renvoie_404(self, client_liens):
+        """Vérifie que GET /liens/{id} renvoie 404 si le lien n'existe pas."""
+        reponse = client_liens.get("/liens/l_999")
+
+        assert reponse.status_code == 404
+
+
+class TestPostLien:
+    """Tests pour la route POST /liens."""
+
+    def test_post_lien_cree_le_lien(self, client_liens):
+        """Vérifie que POST /liens ajoute le lien dans le fichier."""
+        reponse = client_liens.post(
+            "/liens",
+            json={"id": "l_002", "source": "p_002", "destination": "p_001", "type": "partenaire"},
+        )
+
+        assert reponse.status_code == 200
+        assert client_liens.get("/liens/l_002").json()["type"] == "partenaire"
+
+    def test_post_lien_existant_renvoie_400(self, client_liens):
+        """Vérifie que POST /liens renvoie 400 si l'id existe déjà."""
+        reponse = client_liens.post(
+            "/liens",
+            json={"id": "l_001", "source": "p_001", "destination": "p_002", "type": "parent"},
+        )
+
+        assert reponse.status_code == 400
+
+    def test_post_lien_type_invalide_renvoie_422(self, client_liens):
+        """Vérifie que POST /liens renvoie 422 si le type n'existe pas."""
+        reponse = client_liens.post(
+            "/liens",
+            json={"id": "l_003", "source": "p_001", "destination": "p_002", "type": "ami"},
+        )
+
+        assert reponse.status_code == 422
+
+
+class TestReglesApi:
+    """Les règles de l'arbre renvoient une erreur 400 avec un message clair."""
+
+    def test_post_lien_vers_soi_meme_renvoie_400(self, client_liens):
+        reponse = client_liens.post(
+            "/liens",
+            json={"id": "l_009", "source": "p_001", "destination": "p_001", "type": "partenaire"},
+        )
+
+        assert reponse.status_code == 400
+        assert "elle-même" in reponse.json()["detail"]
+
+    def test_put_lien_vers_soi_meme_renvoie_400(self, client_liens):
+        reponse = client_liens.put("/liens/l_001", json={"destination": "p_001"})
+
+        assert reponse.status_code == 400
+
+
+class TestPutLien:
+    """Tests pour la route PUT /liens/{lien_id}."""
+
+    def test_put_lien_modifie_le_lien(self, client_liens):
+        """Vérifie que PUT /liens/{id} enregistre la modification."""
+        reponse = client_liens.put("/liens/l_001", json={"type": "partenaire"})
+
+        assert reponse.status_code == 200
+        assert client_liens.get("/liens/l_001").json()["type"] == "partenaire"
+
+    def test_put_lien_inexistant_renvoie_404(self, client_liens):
+        """Vérifie que PUT /liens/{id} renvoie 404 si le lien n'existe pas."""
+        reponse = client_liens.put("/liens/l_999", json={"type": "partenaire"})
+
+        assert reponse.status_code == 404
+
+    def test_put_lien_type_invalide_renvoie_422(self, client_liens):
+        """Vérifie que PUT /liens/{id} renvoie 422 si le nouveau type est invalide."""
+        reponse = client_liens.put("/liens/l_001", json={"type": "ami"})
+
+        assert reponse.status_code == 422
+
+
+class TestDeleteLien:
+    """Tests pour la route DELETE /liens/{lien_id}."""
+
+    def test_delete_lien_supprime_le_lien(self, client_liens):
+        """Vérifie que DELETE /liens/{id} retire le lien du fichier."""
+        reponse = client_liens.delete("/liens/l_001")
+
+        assert reponse.status_code == 200
+        assert client_liens.get("/liens").json() == []
+
+    def test_delete_lien_inexistant_renvoie_404(self, client_liens):
+        """Vérifie que DELETE /liens/{id} renvoie 404 si le lien n'existe pas."""
+        reponse = client_liens.delete("/liens/l_999")
+
+        assert reponse.status_code == 404
 
 
 class TestCors:

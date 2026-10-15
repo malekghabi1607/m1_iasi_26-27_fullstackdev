@@ -171,6 +171,7 @@ def fichier_arbre_avec_lien(tmp_path):
         personnes=[
             Personne(id="p_001", prenom="Jean"),
             Personne(id="p_002", prenom="Marie"),
+            Personne(id="p_003", prenom="Paul"),
         ],
         liens=[
             Lien(id="l_001", source="p_001", destination="p_002", type=LienType.PARENT),
