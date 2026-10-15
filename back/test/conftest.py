@@ -95,6 +95,14 @@ def arbre_invalide_sans_liens():
 
 
 @pytest.fixture
+def fichier_arbre(tmp_path, arbre_valide):
+    """Écrit arbre_valide dans un fichier temporaire et renvoie son chemin."""
+    chemin = tmp_path / "arbre.json"
+    MoteurPersistence.dump(arbre_valide, str(chemin))
+    return str(chemin)
+
+
+@pytest.fixture
 def arbre_valide_avec_personnes():
     return ArbreGenealogique(
         personnes=[

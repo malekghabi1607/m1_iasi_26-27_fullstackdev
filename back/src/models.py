@@ -71,6 +71,7 @@ class Lien(BaseModel):
         notes (Optional[str]): Additional context.
         events (Optional[List[Event]]): Significant events related to the relationship.
     """
+    model_config = ConfigDict(validate_assignment=True)
     id: str = Field(..., description="Unique identifier for the relationship link (e.g., 'l_001').")
     source: str = Field(..., description="ID of the source node.")
     destination: str = Field(..., description="ID of the target node.")

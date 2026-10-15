@@ -90,27 +90,58 @@ class MoteurPersistence:
     @staticmethod
     def create_lien(file_path: str, lien) -> ArbreGenealogique:
         """Ajoute un lien à l'arbre généalogique dans le fichier spécifié."""
+        if not isinstance(lien, Lien):
+            raise ValueError("L'argument 'lien' doit être une instance de Lien.")
+
         arbre = MoteurPersistence.load(file_path)
+
+        if any(l.id == lien.id for l in arbre.liens):
+            raise ValueError('Il existe déjà un lien avec cet id')
 
         arbre.liens.append(lien)
         MoteurPersistence.dump(arbre, file_path)
         return arbre
 
-
-    @staticmethod
-    def get_lien(file_path: str, lien_id: str) -> Lien:
+    def get_lien(file_path:str,lien_id):
         """Récupère un lien par son ID depuis le fichier spécifié."""
         arbre = MoteurPersistence.load(file_path)
         for lien in arbre.liens:
             if lien.id == lien_id:
                 return lien
-        raise ValueError(f"Lien avec l'ID {lien_id} non trouvé.")
+        raise ValueError(f"Lien avec l'ID {lien_id} non trouvée.")
 
-            
-            
 
-    def update_lien(lien_id):
-        pass
+    def update_lien(file_path: str, lien_id: str, updates: dict) -> Lien:
+        """Met à jour un lien par son ID dans le fichier spécifié avec un dictionnaire de mises à jour."""
+        arbre = MoteurPersistence.load(file_path)
 
-    def delete_lien(lien_id):
-        pass
+        # Trouver la personne à mettre à jour
+        lien_index = None
+        for i, lien in enumerate(arbre.liens):
+            if lien.id == lien_id:
+                lien_index = i
+                break
+
+        if lien_index is None:
+            raise ValueError(f"Lien avec l'ID {lien_id} non trouvée.")
+
+        # Créer une copie de la personne avec les mises à jour
+        lien_dict = arbre.liens[lien_index].model_dump()
+        lien_dict.update(updates)
+
+        # Valider les données avec Pydantic
+        try:
+            lien_update = Lien(**lien_dict)
+        except ValidationError as e:
+            raise e
+
+        # Mettre à jour l'arbre
+        arbre.liens[lien_index] = lien_update
+        MoteurPersistence.dump(arbre, file_path)
+        return lien_update
+
+    def delete_lien(file_path:str,lien_id):
+        """Supprime un lien par son ID dans le fichier spécifié."""
+        arbre = MoteurPersistence.load(file_path)
+        arbre.liens = [p for p in arbre.liens if p.id != lien_id]
+        MoteurPersistence.dump(arbre, file_path)
