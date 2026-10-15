@@ -17,7 +17,7 @@ header {
 }
 
 main {
-    max-width: 700px;
+    max-width: 760px;
     margin: 24px auto;
     padding: 0 16px;
 }
@@ -30,8 +30,21 @@ main {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
+h2 {
+    margin-top: 0;
+    font-size: 20px;
+}
+
+/* ===== Formulaires ===== */
+
 form {
     display: grid;
+    gap: 10px;
+}
+
+.deux-colonnes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
 }
 
@@ -41,12 +54,21 @@ label {
     font-size: 14px;
 }
 
-input {
+input,
+select {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
+    background: white;
 }
+
+input:disabled {
+    background: #eee;
+    color: #777;
+}
+
+/* ===== Boutons ===== */
 
 button {
     padding: 10px;
@@ -62,18 +84,80 @@ button:hover {
     background: #1b5e20;
 }
 
-#message {
-    min-height: 20px;
-    font-size: 14px;
+button.secondaire {
+    background: #e0e0e0;
+    color: #222;
 }
 
-.succes {
-    color: #2e7d32;
+button.secondaire:hover {
+    background: #c7c7c7;
 }
 
-.erreur {
-    color: #c62828;
+button.danger {
+    background: #c62828;
 }
+
+button.danger:hover {
+    background: #8e0000;
+}
+
+.boutons {
+    display: flex;
+    gap: 10px;
+}
+
+.boutons button {
+    flex: 1;
+}
+
+/* ===== Message ===== */
+
+/* bandeau fixé en haut de l'écran : caché au-dessus, il descend quand on l'affiche */
+.bandeau {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 48px;
+    color: white;
+    font-size: 15px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.bandeau.visible {
+    transform: translateY(0);
+}
+
+.bandeau.succes {
+    background: #43a047;
+}
+
+.bandeau.erreur {
+    background: #c62828;
+}
+
+#fermer-bandeau {
+    position: absolute;
+    right: 12px;
+    padding: 0 8px;
+    background: transparent;
+    font-size: 22px;
+    line-height: 1;
+}
+
+#fermer-bandeau:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ===== Listes ===== */
 
 ul {
     list-style: none;
@@ -82,6 +166,10 @@ ul {
 }
 
 li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
     padding: 10px 0;
     border-bottom: 1px solid #eee;
 }
@@ -90,7 +178,60 @@ li:last-child {
     border-bottom: none;
 }
 
-.id {
+li.vide {
+    color: #888;
+    font-style: italic;
+}
+
+.details {
     color: #888;
     font-size: 13px;
+}
+
+.actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.actions button {
+    padding: 6px 10px;
+    font-size: 13px;
+}
+
+/* ===== Règles ===== */
+
+.regles {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #555;
+}
+
+.regles summary {
+    cursor: pointer;
+}
+
+.regles ul {
+    padding-left: 20px;
+    margin-top: 8px;
+}
+
+.regles li {
+    display: list-item;
+    list-style: disc;
+    padding: 2px 0;
+    border-bottom: none;
+}
+
+/* ===== Petits écrans (téléphone) ===== */
+
+@media (max-width: 560px) {
+    .deux-colonnes {
+        grid-template-columns: 1fr;
+    }
+
+    li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }

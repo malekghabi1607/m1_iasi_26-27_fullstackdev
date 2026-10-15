@@ -11,33 +11,99 @@
         <h1>Arbre généalogique</h1>
     </header>
 
+    <!-- bandeau de message (succès en vert, erreur en rouge) -->
+    <div id="bandeau" class="bandeau" role="status" aria-hidden="true">
+        <span id="message"></span>
+        <button type="button" id="fermer-bandeau" aria-label="Fermer">×</button>
+    </div>
+
     <main>
+
+        <!-- ===== Personnes ===== -->
         <section class="carte">
-            <h2>Ajouter une personne</h2>
-            <form id="formulaire">
+            <h2 id="titre-formulaire">Ajouter une personne</h2>
+            <form id="form-personne" novalidate>
                 <label>Identifiant *
                     <input name="id" required placeholder="p_001">
                 </label>
-                <label>Prénom
-                    <input name="prenom" placeholder="Jean">
+                <div class="deux-colonnes">
+                    <label>Prénom
+                        <input name="prenom" placeholder="Jean">
+                    </label>
+                    <label>Nom de famille
+                        <input name="nom_famille" placeholder="Dupont">
+                    </label>
+                </div>
+                <div class="deux-colonnes">
+                    <label>Date de naissance
+                        <input name="date_naissance" placeholder="1990 ou 1990-05-15">
+                    </label>
+                    <label>Lieu de naissance
+                        <input name="lieu_naissance" placeholder="Paris">
+                    </label>
+                </div>
+                <div class="deux-colonnes">
+                    <label>Date de décès
+                        <input name="date_mort" placeholder="2020 ou 2020-01-31">
+                    </label>
+                    <label>Lieu de décès
+                        <input name="lieu_mort" placeholder="Lyon">
+                    </label>
+                </div>
+                <label>Nationalité
+                    <input name="nationalite" placeholder="Française">
                 </label>
-                <label>Nom de famille
-                    <input name="nom_famille" placeholder="Dupont">
-                </label>
-                <label>Date de naissance
-                    <input name="date_naissance" placeholder="1990 ou 1990-05-15">
-                </label>
-                <label>Lieu de naissance
-                    <input name="lieu_naissance" placeholder="Paris">
-                </label>
-                <button type="submit">Ajouter</button>
+                <div class="boutons">
+                    <button type="submit" id="bouton-personne">Ajouter</button>
+                    <button type="button" id="annuler-modification" class="secondaire" hidden>Annuler</button>
+                </div>
             </form>
-            <p id="message"></p>
         </section>
 
         <section class="carte">
             <h2>Personnes</h2>
             <ul id="liste-personnes"></ul>
+        </section>
+
+        <!-- ===== Liens ===== -->
+        <section class="carte">
+            <h2>Ajouter un lien</h2>
+            <form id="form-lien" novalidate>
+                <label>Identifiant *
+                    <input name="id" required placeholder="l_001">
+                </label>
+                <div class="deux-colonnes">
+                    <label>Source *
+                        <select name="source" required></select>
+                    </label>
+                    <label>Destination *
+                        <select name="destination" required></select>
+                    </label>
+                </div>
+                <label>Type *
+                    <select name="type" required>
+                        <option value="parent">parent (la source est parent de la destination)</option>
+                        <option value="partenaire">partenaire</option>
+                    </select>
+                </label>
+                <button type="submit">Ajouter le lien</button>
+            </form>
+            <details class="regles">
+                <summary>Règles d'un lien</summary>
+                <ul>
+                    <li>la source et la destination doivent exister ;</li>
+                    <li>une personne ne peut pas être liée à elle-même ;</li>
+                    <li>un même lien ne peut pas exister deux fois (un partenariat compte dans les deux sens) ;</li>
+                    <li>une personne a au plus deux parents ;</li>
+                    <li>une personne ne peut pas devenir son propre ancêtre ;</li>
+                    <li>un parent doit être né avant son enfant.</li>
+                </ul>
+            </details>
+        </section>
+
+        <section class="carte">
+            <h2>Liens</h2>
+            <ul id="liste-liens"></ul>
         </section>
     </main>
 
