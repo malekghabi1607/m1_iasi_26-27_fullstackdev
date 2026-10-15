@@ -1,4 +1,5 @@
 import pytest
+from pathlib import Path
 from pydantic import ValidationError
 
 from src.models import ArbreGenealogique
@@ -58,3 +59,9 @@ class TestLoad:
 
         with pytest.raises(ValidationError):
             MoteurPersistence.load(str(file_path))
+
+def test_fichier_pointe_vers_data_json_du_projet():
+    """Vérifie que FICHIER pointe vers back/data/data.json."""
+    attendu = Path(__file__).parent.parent / "data" / "data.json"
+
+    assert MoteurPersistence.FICHIER == attendu
