@@ -20,7 +20,8 @@ async def get_all_personnes():
     Retourne:
         List[Personne]: Liste des personnes.
     """
-    pass
+    arbre = MoteurPersistence.load('./data/data.json')
+    return arbre.personnes
 
 
 @app.get('/personnes/{personne_id}', response_model=Personne)
@@ -33,7 +34,11 @@ async def get_personne_by_id(personne_id: str):
     Erreurs:
         HTTPException 404: Si la personne n'existe pas.
     """
-    pass
+    try:
+        personne = MoteurPersistence.get_personne('./data/data.json', personne_id)
+        return personne
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @app.post('/personnes', response_model=Personne)
@@ -46,7 +51,11 @@ async def create_personne(personne: Personne):
     Erreurs:
         HTTPException 400: Si l'ID existe déjà.
     """
-    pass
+    try:
+        MoteurPersistence.create_personne('./data/data.json', personne)
+        return personne
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @app.put('/personnes/{personne_id}', response_model=Personne)
@@ -60,7 +69,11 @@ async def update_personne(personne_id: str, updates: dict):
     Erreurs:
         HTTPException 404: Si la personne n'existe pas.
     """
-    pass
+    try:
+        updated_personne = MoteurPersistence.update_personne('./data/data.json', personne_id, updates)
+        return updated_personne
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @app.delete('/personnes/{personne_id}')
@@ -73,7 +86,11 @@ async def delete_personne(personne_id: str):
     Erreurs:
         HTTPException 404: Si la personne n'existe pas.
     """
-    pass
+    try:
+        MoteurPersistence.delete_personne('./data/data.json', personne_id)
+        return {"message": f"Personne {personne_id} supprimée avec succès."}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 # === Routes pour Liens ===
@@ -83,7 +100,8 @@ async def get_all_liens():
     Retourne:
         List[Lien]: Liste des liens.
     """
-    pass
+    arbre = MoteurPersistence.load('./data/data.json')
+    return arbre.liens
 
 
 @app.get('/liens/{lien_id}', response_model=Lien)
@@ -96,7 +114,11 @@ async def get_lien_by_id(lien_id: str):
     Erreurs:
         HTTPException 404: Si le lien n'existe pas.
     """
-    pass
+    try:
+        lien = MoteurPersistence.get_lien('./data/data.json', lien_id)
+        return lien
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @app.post('/liens', response_model=Lien)
@@ -109,7 +131,11 @@ async def create_lien(lien: Lien):
     Erreurs:
         HTTPException 400: Si l'ID existe déjà.
     """
-    pass
+    try:
+        MoteurPersistence.create_lien('./data/data.json', lien)
+        return lien
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @app.put('/liens/{lien_id}', response_model=Lien)
@@ -123,7 +149,11 @@ async def update_lien(lien_id: str, updates: dict):
     Erreurs:
         HTTPException 404: Si le lien n'existe pas.
     """
-    pass
+    try:
+        updated_lien = MoteurPersistence.update_lien('./data/data.json', lien_id, updates)
+        return updated_lien
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @app.delete('/liens/{lien_id}')
@@ -136,7 +166,11 @@ async def delete_lien(lien_id: str):
     Erreurs:
         HTTPException 404: Si le lien n'existe pas.
     """
-    pass
+    try:
+        MoteurPersistence.delete_lien('./data/data.json', lien_id)
+        return {"message": f"Lien {lien_id} supprimé avec succès."}
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 if __name__ == "__main__":
