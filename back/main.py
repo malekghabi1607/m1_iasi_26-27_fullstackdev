@@ -14,7 +14,7 @@ async def root():
 
 @app.get('/personnes')
 async def get_personnes():
-    loaded_file: ArbreGenealogique = MoteurPersistence.load('./data/example.json')
+    loaded_file: ArbreGenealogique = MoteurPersistence.load(MoteurPersistence.FICHIER)
     return loaded_file.personnes
     # return 'je suis censé être la liste des personnes'
 
