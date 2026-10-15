@@ -6,7 +6,7 @@ from pydantic import ValidationError
 
 class MoteurPersistence:
 
-    FICHIER = Path(__file__).parent.parent / '/data' / 'data.json'
+    FICHIER = Path(__file__).parent.parent / 'data' / 'data.json'
 
     # === Globales sur l'arbre === #
     def dump(arbreGenealogique: ArbreGenealogique, file_path: str) -> None:
