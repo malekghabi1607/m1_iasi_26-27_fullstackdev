@@ -27,6 +27,12 @@
       "source": "42",
       "destination": "44",
       "type": "partenaire"
+    },
+    {
+      "id": "l_1",
+      "source": "42",
+      "destination": "44",
+      "type": "parent"
     }
   ]
 }
