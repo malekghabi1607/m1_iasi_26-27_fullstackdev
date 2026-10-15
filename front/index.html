@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arbre généalogique</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Arbre généalogique</h1>
+    </header>
+
+    <main>
+        <section class="carte">
+            <h2>Ajouter une personne</h2>
+            <form id="formulaire">
+                <label>Identifiant *
+                    <input name="id" required placeholder="p_001">
+                </label>
+                <label>Prénom
+                    <input name="prenom" placeholder="Jean">
+                </label>
+                <label>Nom de famille
+                    <input name="nom_famille" placeholder="Dupont">
+                </label>
+                <label>Date de naissance
+                    <input name="date_naissance" placeholder="1990 ou 1990-05-15">
+                </label>
+                <label>Lieu de naissance
+                    <input name="lieu_naissance" placeholder="Paris">
+                </label>
+                <button type="submit">Ajouter</button>
+            </form>
+            <p id="message"></p>
+        </section>
+
+        <section class="carte">
+            <h2>Personnes</h2>
+            <ul id="liste-personnes"></ul>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
