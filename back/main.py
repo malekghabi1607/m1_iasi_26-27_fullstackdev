@@ -1,11 +1,21 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+from pydantic import ValidationError
 from pathlib import Path
 from typing import List
 from src.models import ArbreGenealogique, Personne, Lien
-from src.persistence import MoteurPersistence
+from src.persistence import MoteurPersistence, RegleMetierError
 
 app = FastAPI()
+
+# autorise le front (page HTML ouverte dans le navigateur) à appeler l'API
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get('/')
@@ -20,7 +30,7 @@ async def get_all_personnes():
     Retourne:
         List[Personne]: Liste des personnes.
     """
-    arbre = MoteurPersistence.load('./data/data.json')
+    arbre = MoteurPersistence.load(MoteurPersistence.FICHIER)
     return arbre.personnes
 
 
@@ -35,7 +45,7 @@ async def get_personne_by_id(personne_id: str):
         HTTPException 404: Si la personne n'existe pas.
     """
     try:
-        personne = MoteurPersistence.get_personne('./data/data.json', personne_id)
+        personne = MoteurPersistence.get_personne(MoteurPersistence.FICHIER, personne_id)
         return personne
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -52,7 +62,7 @@ async def create_personne(personne: Personne):
         HTTPException 400: Si l'ID existe déjà.
     """
     try:
-        MoteurPersistence.create_personne('./data/data.json', personne)
+        MoteurPersistence.create_personne(MoteurPersistence.FICHIER, personne)
         return personne
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -70,8 +80,13 @@ async def update_personne(personne_id: str, updates: dict):
         HTTPException 404: Si la personne n'existe pas.
     """
     try:
-        updated_personne = MoteurPersistence.update_personne('./data/data.json', personne_id, updates)
+        updated_personne = MoteurPersistence.update_personne(MoteurPersistence.FICHIER, personne_id, updates)
         return updated_personne
+    # ValidationError et RegleMetierError sont des sortes de ValueError : on les traite en premier
+    except ValidationError as e:
+        raise HTTPException(status_code=422, detail=e.errors(include_url=False, include_context=False))
+    except RegleMetierError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
@@ -87,7 +102,9 @@ async def delete_personne(personne_id: str):
         HTTPException 404: Si la personne n'existe pas.
     """
     try:
-        MoteurPersistence.delete_personne('./data/data.json', personne_id)
+        # delete_personne ne signale pas un id inconnu : get_personne lève l'erreur 404
+        MoteurPersistence.get_personne(MoteurPersistence.FICHIER, personne_id)
+        MoteurPersistence.delete_personne(MoteurPersistence.FICHIER, personne_id)
         return {"message": f"Personne {personne_id} supprimée avec succès."}
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -100,7 +117,7 @@ async def get_all_liens():
     Retourne:
         List[Lien]: Liste des liens.
     """
-    arbre = MoteurPersistence.load('./data/data.json')
+    arbre = MoteurPersistence.load(MoteurPersistence.FICHIER)
     return arbre.liens
 
 
@@ -115,7 +132,7 @@ async def get_lien_by_id(lien_id: str):
         HTTPException 404: Si le lien n'existe pas.
     """
     try:
-        lien = MoteurPersistence.get_lien('./data/data.json', lien_id)
+        lien = MoteurPersistence.get_lien(MoteurPersistence.FICHIER, lien_id)
         return lien
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -132,7 +149,7 @@ async def create_lien(lien: Lien):
         HTTPException 400: Si l'ID existe déjà.
     """
     try:
-        MoteurPersistence.create_lien('./data/data.json', lien)
+        MoteurPersistence.create_lien(MoteurPersistence.FICHIER, lien)
         return lien
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -150,8 +167,13 @@ async def update_lien(lien_id: str, updates: dict):
         HTTPException 404: Si le lien n'existe pas.
     """
     try:
-        updated_lien = MoteurPersistence.update_lien('./data/data.json', lien_id, updates)
+        updated_lien = MoteurPersistence.update_lien(MoteurPersistence.FICHIER, lien_id, updates)
         return updated_lien
+    # ValidationError et RegleMetierError sont des sortes de ValueError : on les traite en premier
+    except ValidationError as e:
+        raise HTTPException(status_code=422, detail=e.errors(include_url=False, include_context=False))
+    except RegleMetierError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
@@ -167,7 +189,9 @@ async def delete_lien(lien_id: str):
         HTTPException 404: Si le lien n'existe pas.
     """
     try:
-        MoteurPersistence.delete_lien('./data/data.json', lien_id)
+        # delete_lien ne signale pas un id inconnu : get_lien lève l'erreur 404
+        MoteurPersistence.get_lien(MoteurPersistence.FICHIER, lien_id)
+        MoteurPersistence.delete_lien(MoteurPersistence.FICHIER, lien_id)
         return {"message": f"Lien {lien_id} supprimé avec succès."}
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))

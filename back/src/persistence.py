@@ -1,7 +1,21 @@
 import json
 from pathlib import Path
-from src.models import ArbreGenealogique, Personne, Lien
+from src.models import ArbreGenealogique, Personne, Lien, LienType
 from pydantic import ValidationError
+
+
+class RegleMetierError(ValueError):
+    """Donnée au bon format, mais qui n'a pas de sens dans un arbre généalogique."""
+
+
+def _avant(date_a: str, date_b: str) -> bool:
+    """Indique si date_a est strictement avant date_b.
+
+    Les dates sont au format AAAA ou AAAA-MM-JJ : on compare seulement
+    la partie commune (l'année si l'une des deux n'a que l'année).
+    """
+    n = min(len(date_a), len(date_b))
+    return date_a[:n] < date_b[:n]
 
 
 class MoteurPersistence:
@@ -84,7 +98,56 @@ class MoteurPersistence:
         """Supprime une personne par son ID dans le fichier spécifié."""
         arbre = MoteurPersistence.load(file_path)
         arbre.personnes = [p for p in arbre.personnes if p.id != personne_id]
+        # un lien vers une personne qui n'existe plus n'a pas de sens
+        arbre.liens = [l for l in arbre.liens if personne_id not in (l.source, l.destination)]
         MoteurPersistence.dump(arbre, file_path)
+
+    # === Règles de cohérence des liens === #
+    @staticmethod
+    def _ancetres(liens: list, personne_id: str) -> set:
+        """Renvoie les id de tous les ancêtres d'une personne (parents, grands-parents...)."""
+        ancetres = set()
+        a_visiter = [personne_id]
+        while a_visiter:
+            courant = a_visiter.pop()
+            for l in liens:
+                if l.type == LienType.PARENT and l.destination == courant and l.source not in ancetres:
+                    ancetres.add(l.source)
+                    a_visiter.append(l.source)
+        return ancetres
+
+    @staticmethod
+    def _verifier_lien(arbre: ArbreGenealogique, lien: Lien) -> None:
+        """Lève RegleMetierError si le lien n'a pas de sens dans l'arbre."""
+        personnes = {p.id: p for p in arbre.personnes}
+        # les autres liens (en modification, le lien ne se compare pas à lui-même)
+        autres = [l for l in arbre.liens if l.id != lien.id]
+
+        if lien.source not in personnes or lien.destination not in personnes:
+            raise RegleMetierError("La source et la destination doivent être des personnes existantes.")
+
+        if lien.source == lien.destination:
+            raise RegleMetierError("Une personne ne peut pas être liée à elle-même.")
+
+        for l in autres:
+            meme_sens = (l.source, l.destination) == (lien.source, lien.destination)
+            sens_inverse = (l.source, l.destination) == (lien.destination, lien.source)
+            # un partenariat est symétrique : A partenaire de B = B partenaire de A
+            if l.type == lien.type and (meme_sens or (lien.type == LienType.PARTENAIRE and sens_inverse)):
+                raise RegleMetierError("Ce lien existe déjà.")
+
+        if lien.type == LienType.PARENT:
+            parents = [l for l in autres if l.type == LienType.PARENT and l.destination == lien.destination]
+            if len(parents) >= 2:
+                raise RegleMetierError("Une personne ne peut pas avoir plus de deux parents.")
+
+            if lien.destination in MoteurPersistence._ancetres(autres, lien.source):
+                raise RegleMetierError("Ce lien est impossible : une personne deviendrait son propre ancêtre.")
+
+            parent = personnes[lien.source]
+            enfant = personnes[lien.destination]
+            if parent.date_naissance and enfant.date_naissance and not _avant(parent.date_naissance, enfant.date_naissance):
+                raise RegleMetierError("Un parent doit être né avant son enfant.")
 
     # === CRUD liens === #
     @staticmethod
@@ -97,6 +160,8 @@ class MoteurPersistence:
 
         if any(l.id == lien.id for l in arbre.liens):
             raise ValueError('Il existe déjà un lien avec cet id')
+
+        MoteurPersistence._verifier_lien(arbre, lien)
 
         arbre.liens.append(lien)
         MoteurPersistence.dump(arbre, file_path)
@@ -134,6 +199,8 @@ class MoteurPersistence:
             lien_update = Lien(**lien_dict)
         except ValidationError as e:
             raise e
+
+        MoteurPersistence._verifier_lien(arbre, lien_update)
 
         # Mettre à jour l'arbre
         arbre.liens[lien_index] = lien_update

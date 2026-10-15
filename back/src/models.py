@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import Optional, List
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class Personne(BaseModel):
@@ -42,6 +42,16 @@ class Personne(BaseModel):
         description="Allows full ISO date or just the year."
     )
     nationalite: Optional[str] = None
+
+    @model_validator(mode="after")
+    def verifier_dates(self):
+        """Refuse une date de décès antérieure à la date de naissance."""
+        if self.date_naissance and self.date_mort:
+            # dates au format AAAA ou AAAA-MM-JJ : on compare la partie commune
+            n = min(len(self.date_naissance), len(self.date_mort))
+            if self.date_mort[:n] < self.date_naissance[:n]:
+                raise ValueError("La date de décès doit être après la date de naissance.")
+        return self
 
 
 class LienType(str, Enum):
