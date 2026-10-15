@@ -104,7 +104,10 @@ class MoteurPersistence:
         for lien in arbre.liens:
             if lien.id == lien_id:
                 return lien
+        raise ValueError(f"Lien avec l'ID {lien_id} non trouvé.")
 
+            
+            
 
     def update_lien(lien_id):
         pass
