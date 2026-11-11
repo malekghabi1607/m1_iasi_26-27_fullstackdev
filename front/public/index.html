@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Arbre généalogique</title>
+    </head>
+
+    <body>
+        <div id="family-tree-root" class="root"></div>
+
+        <noscript
+            >Cette application nécessite Javascript pour fonctionner</noscript
+        >
+        <script>
+            const appScript = document.createElement("script");
+            appScript.src = `${window.location.origin}/dist/app.js`;
+            document.body.appendChild(appScript);
+        </script>
+    </body>
+</html>
