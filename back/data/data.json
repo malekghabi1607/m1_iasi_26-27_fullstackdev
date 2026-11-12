@@ -1,37 +1,113 @@
 {
   "personnes": [
     {
-      "id": "42",
-      "nom_famille": "a la ferme",
-      "prenom": "toto",
-      "lieu_naissance": null,
-      "date_naissance": null,
-      "lieu_mort": null,
-      "date_mort": null,
-      "nationalite": null
+      "id": "p_001",
+      "prenom": "Paul",
+      "nom_famille": "Dubois",
+      "date_naissance": "1935-04-12",
+      "lieu_naissance": "Lyon",
+      "date_mort": "2010-11-03",
+      "lieu_mort": "Paris",
+      "nationalite": "Française"
     },
     {
-      "id": "44",
-      "nom_famille": "lalalalalalla",
-      "prenom": "the other one",
-      "lieu_naissance": null,
-      "date_naissance": null,
-      "lieu_mort": null,
+      "id": "p_002",
+      "prenom": "Hélène",
+      "nom_famille": "Dubois",
+      "date_naissance": "1938-09-30",
+      "lieu_naissance": "Lyon",
       "date_mort": null,
-      "nationalite": null
+      "lieu_mort": null,
+      "nationalite": "Française"
+    },
+    {
+      "id": "p_003",
+      "prenom": "Jean",
+      "nom_famille": "Martin",
+      "date_naissance": "1960-02-18",
+      "lieu_naissance": "Bordeaux",
+      "date_mort": null,
+      "lieu_mort": null,
+      "nationalite": "Française"
+    },
+    {
+      "id": "p_004",
+      "prenom": "Marie",
+      "nom_famille": "Martin",
+      "date_naissance": "1962-06-05",
+      "lieu_naissance": "Paris",
+      "date_mort": null,
+      "lieu_mort": null,
+      "nationalite": "Française"
+    },
+    {
+      "id": "p_005",
+      "prenom": "Lucas",
+      "nom_famille": "Martin",
+      "date_naissance": "1990-03-15",
+      "lieu_naissance": "Paris",
+      "date_mort": null,
+      "lieu_mort": null,
+      "nationalite": "Française"
+    },
+    {
+      "id": "p_006",
+      "prenom": "Emma",
+      "nom_famille": "Martin",
+      "date_naissance": "1993-08-22",
+      "lieu_naissance": "Paris",
+      "date_mort": null,
+      "lieu_mort": null,
+      "nationalite": "Française"
     }
   ],
   "liens": [
     {
-      "id": "1",
-      "source": "42",
-      "destination": "44",
+      "id": "p_001-partenaire-p_002",
+      "source": "p_001",
+      "destination": "p_002",
       "type": "partenaire"
     },
     {
-      "id": "l_1",
-      "source": "42",
-      "destination": "44",
+      "id": "p_001-parent-p_004",
+      "source": "p_001",
+      "destination": "p_004",
+      "type": "parent"
+    },
+    {
+      "id": "p_002-parent-p_004",
+      "source": "p_002",
+      "destination": "p_004",
+      "type": "parent"
+    },
+    {
+      "id": "p_003-partenaire-p_004",
+      "source": "p_003",
+      "destination": "p_004",
+      "type": "partenaire"
+    },
+    {
+      "id": "p_003-parent-p_005",
+      "source": "p_003",
+      "destination": "p_005",
+      "type": "parent"
+    },
+    {
+      "id": "p_004-parent-p_005",
+      "source": "p_004",
+      "destination": "p_005",
+      "type": "parent"
+    },
+    {
+      "id": "p_003-parent-p_006",
+      "source": "p_003",
+      "destination": "p_006",
+      "type": "parent"
+    },
+    {
+      "id": "p_004-parent-p_006",
+      "source": "p_004",
+      "destination": "p_006",
       "type": "parent"
     }
   ]
