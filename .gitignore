@@ -1,5 +1,6 @@
 .idea/
 .venv/
+.env
 
 # Front
 front/node_modules/*
