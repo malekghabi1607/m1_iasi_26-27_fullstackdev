@@ -1,5 +1,9 @@
 .idea/
 .venv/
+.env
+
+# Front
+front/node_modules/*
 
 # Ignore data (except for example one)
 back/data/*.json
