@@ -62,9 +62,41 @@ class TestReglesCreationLien:
         with pytest.raises(RegleMetierError, match="existe déjà"):
             MoteurPersistence.create_lien(fichier_famille, nouveau_lien("l_9", "mere", "pere", LienType.PARTENAIRE))
 
+    @pytest.mark.parametrize("source,destination", [
+        ("pere", "autre"), ("autre", "pere"), ("mere", "autre"), ("autre", "mere"),
+    ])
+    def test_refuse_un_second_partenaire(self, fichier_famille, source, destination):
+        avant = fichier_famille.read_bytes()
+        with pytest.raises(RegleMetierError, match="un seul partenaire"):
+            MoteurPersistence.create_lien(fichier_famille, nouveau_lien("l_9", source, destination, LienType.PARTENAIRE))
+        assert fichier_famille.read_bytes() == avant
+
+    def test_accepte_un_autre_couple_independant(self, fichier_famille):
+        MoteurPersistence.create_lien(fichier_famille, nouveau_lien("l_9", "enfant", "autre", LienType.PARTENAIRE))
+        assert MoteurPersistence.get_lien(fichier_famille, "l_9").destination == "autre"
+
+    def test_accepte_un_nouveau_partenaire_apres_suppression(self, fichier_famille):
+        MoteurPersistence.delete_lien(fichier_famille, "l_3")
+        MoteurPersistence.create_lien(fichier_famille, nouveau_lien("l_9", "pere", "autre", LienType.PARTENAIRE))
+        assert MoteurPersistence.get_lien(fichier_famille, "l_9").destination == "autre"
+
     def test_refuse_plus_de_deux_parents(self, fichier_famille):
         with pytest.raises(RegleMetierError, match="deux parents"):
             MoteurPersistence.create_lien(fichier_famille, nouveau_lien("l_9", "sans_date", "enfant", LienType.PARENT))
+
+    @pytest.mark.parametrize("source,destination", [("pere", "enfant"), ("enfant", "pere")])
+    def test_refuse_un_partenariat_entre_parent_et_enfant(self, fichier_famille, source, destination):
+        avant = fichier_famille.read_bytes()
+        with pytest.raises(RegleMetierError, match="parent et son enfant"):
+            MoteurPersistence.create_lien(fichier_famille, nouveau_lien("l_9", source, destination, LienType.PARTENAIRE))
+        assert fichier_famille.read_bytes() == avant
+
+    @pytest.mark.parametrize("source,destination", [("pere", "mere"), ("mere", "pere")])
+    def test_refuse_un_lien_parent_entre_partenaires(self, fichier_famille, source, destination):
+        avant = fichier_famille.read_bytes()
+        with pytest.raises(RegleMetierError, match="partenaires"):
+            MoteurPersistence.create_lien(fichier_famille, nouveau_lien("l_9", source, destination, LienType.PARENT))
+        assert fichier_famille.read_bytes() == avant
 
     def test_refuse_qu_un_enfant_soit_parent_de_son_parent(self, fichier_famille):
         with pytest.raises(RegleMetierError, match="propre ancêtre"):
@@ -99,6 +131,34 @@ class TestReglesModificationLien:
         MoteurPersistence.update_lien(fichier_famille, "l_3", {"type": LienType.PARTENAIRE})
 
         assert MoteurPersistence.get_lien(fichier_famille, "l_3").type == LienType.PARTENAIRE
+
+    def test_refuse_de_deplacer_un_partenariat_vers_un_enfant(self, fichier_famille):
+        avant = fichier_famille.read_bytes()
+        with pytest.raises(RegleMetierError, match="parent et son enfant"):
+            MoteurPersistence.update_lien(fichier_famille, "l_3", {"destination": "enfant"})
+        assert fichier_famille.read_bytes() == avant
+
+    def test_refuse_de_deplacer_un_lien_parent_vers_un_partenaire(self, fichier_famille):
+        avant = fichier_famille.read_bytes()
+        with pytest.raises(RegleMetierError, match="partenaires"):
+            MoteurPersistence.update_lien(fichier_famille, "l_1", {"destination": "mere"})
+        assert fichier_famille.read_bytes() == avant
+
+    def test_remplacer_le_type_du_seul_lien_ne_cree_pas_de_cumul(self, fichier_famille):
+        MoteurPersistence.delete_lien(fichier_famille, "l_3")
+        MoteurPersistence.update_lien(fichier_famille, "l_1", {"type": LienType.PARTENAIRE})
+        assert MoteurPersistence.get_lien(fichier_famille, "l_1").type == LienType.PARTENAIRE
+
+    @pytest.mark.parametrize("source,destination", [("pere", "autre"), ("autre", "mere")])
+    def test_refuse_un_second_partenaire_en_modification(self, fichier_famille, source, destination):
+        avant = fichier_famille.read_bytes()
+        with pytest.raises(RegleMetierError, match="un seul partenaire"):
+            MoteurPersistence.update_lien(fichier_famille, "l_1", {"source": source, "destination": destination, "type": LienType.PARTENAIRE})
+        assert fichier_famille.read_bytes() == avant
+
+    def test_accepte_de_remplacer_le_partenaire_du_meme_lien(self, fichier_famille):
+        MoteurPersistence.update_lien(fichier_famille, "l_3", {"destination": "autre"})
+        assert MoteurPersistence.get_lien(fichier_famille, "l_3").destination == "autre"
 
 
 class TestSuppressionPersonne:
