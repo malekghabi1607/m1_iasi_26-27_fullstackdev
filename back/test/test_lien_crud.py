@@ -20,7 +20,7 @@ class TestCreateLien:
         TODO: Vérifier qu'un lien peut être créé avec les champs obligatoires (id, source, destination, type).
         Indice : Utiliser Lien(id="1", source="p1", destination="p2", type=LienType.PARENT).
         """
-        nouveau_lien = Lien(id="l_002", source="p_002", destination="p_001", type=LienType.PARTENAIRE)
+        nouveau_lien = Lien(id="l_002", source="p_002", destination="p_003", type=LienType.PARTENAIRE)
         MoteurPersistence.create_lien(fichier_arbre_avec_lien, nouveau_lien)
 
         arbre_charge = MoteurPersistence.load(fichier_arbre_avec_lien)
