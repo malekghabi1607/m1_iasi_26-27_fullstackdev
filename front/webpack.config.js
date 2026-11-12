@@ -65,6 +65,10 @@ module.exports = function (env, argv) {
                     __dirname,
                     "src/components/",
                 ),
+                "@views": path.resolve(
+                    __dirname,
+                    "src/views/",
+                ),
             },
         },
         output: {
