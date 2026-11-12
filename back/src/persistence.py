@@ -136,6 +136,21 @@ class MoteurPersistence:
             if l.type == lien.type and (meme_sens or (lien.type == LienType.PARTENAIRE and sens_inverse)):
                 raise RegleMetierError("Ce lien existe déjà.")
 
+            if meme_sens or sens_inverse:
+                if lien.type == LienType.PARTENAIRE and l.type == LienType.PARENT:
+                    raise RegleMetierError("Un partenariat est interdit entre un parent et son enfant.")
+                if lien.type == LienType.PARENT and l.type == LienType.PARTENAIRE:
+                    raise RegleMetierError("Un lien parent/enfant est interdit entre deux partenaires.")
+
+        if lien.type == LienType.PARTENAIRE:
+            personnes_du_couple = {lien.source, lien.destination}
+            if any(
+                l.type == LienType.PARTENAIRE
+                and personnes_du_couple.intersection((l.source, l.destination))
+                for l in autres
+            ):
+                raise RegleMetierError("Une personne ne peut avoir qu'un seul partenaire. Supprime d'abord le partenariat existant.")
+
         if lien.type == LienType.PARENT:
             parents = [l for l in autres if l.type == LienType.PARENT and l.destination == lien.destination]
             if len(parents) >= 2:
