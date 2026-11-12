@@ -132,7 +132,109 @@ textarea {
     }
 }
 
+.persons-page {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 40px 38px;
+
+    h1 {
+        margin: 0 0 26px;
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 1.25;
+    }
+}
+
+.persons-table-container {
+    overflow-x: auto;
+    border: 1px solid #E1E4E0;
+    border-radius: 14px;
+    background: #fff;
+}
+
+.persons-table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 14px;
+
+    th {
+        padding: 14px 16px;
+        background: #F0F2EF;
+        color: #414D59;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    td {
+        padding: 8px 16px;
+        border-top: 1px solid #E1E4E0;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+    .persons-actions-heading {
+        text-align: right;
+    }
+
+    .persons-empty {
+        padding: 32px 16px;
+        text-align: center;
+        color: #4B5763;
+    }
+}
+
+.persons-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.person-button {
+    padding: 10px 14px;
+    border: 1px solid #E1E4E0;
+    border-radius: 8px;
+    background: #fff;
+    color: #15202B;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+
+    &:hover {
+        background: #F0F2EF;
+    }
+
+    &:focus-visible {
+        outline: 2px solid #1F6F5C;
+        outline-offset: 2px;
+    }
+}
+
+.person-button-delete {
+    border-color: #F5D9D1;
+    background: #FFF5F2;
+    color: #A3341C;
+
+    &:hover {
+        background: #FBE9E3;
+    }
+}
+
+.persons-message,
+.persons-error {
+    line-height: 1.6;
+}
+
+.persons-error {
+    color: #A3341C;
+}
+
 @media (max-width: 600px) {
+    .persons-page {
+        padding: 28px 16px;
+    }
+
     .welcome {
         padding-top: 88px;
 
