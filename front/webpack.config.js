@@ -104,6 +104,9 @@ module.exports = function (env, argv) {
             historyApiFallback: true, // redirect to index.js if error
         },
         plugins: [
+            new webpack.DefinePlugin({
+                "process.env.API_URL": JSON.stringify(process.env.API_URL || "http://127.0.0.1:9999"),
+            }),
             ...(is_dev_build_mode ? [new webpack.HotModuleReplacementPlugin()] : []),
             new webpack.ProvidePlugin({
                 React: "react",
