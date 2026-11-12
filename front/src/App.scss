@@ -152,6 +152,89 @@ textarea {
     background: #fff;
 }
 
+.persons-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 26px;
+
+    h1 {
+        margin: 0;
+    }
+}
+
+.person-button.person-button-primary {
+    border-color: #1F6F5C;
+    background: #1F6F5C;
+    color: #fff;
+    font-weight: 600;
+
+    &:hover {
+        background: #14503F;
+    }
+}
+
+.new-person-form {
+    margin-bottom: 22px;
+    padding: 22px;
+    border: 1px solid #E1E4E0;
+    border-radius: 14px;
+    background: #fff;
+
+    h2 {
+        margin: 0 0 16px;
+        font-size: 16px;
+        font-weight: 600;
+    }
+}
+
+.new-person-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    label {
+        display: flex;
+        flex: 1 1 180px;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 0;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    input {
+        width: 100%;
+        min-width: 0;
+        height: 42px;
+        padding: 10px 12px;
+        border: 1px solid #E1E4E0;
+        border-radius: 8px;
+        background: #fff;
+        color: #15202B;
+        font-size: 14px;
+
+        &:focus-visible {
+            outline: 2px solid #1F6F5C;
+            outline-offset: 2px;
+        }
+    }
+}
+
+.new-person-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.new-person-actions button:disabled {
+    opacity: 0.65;
+    cursor: wait;
+}
+
 .persons-table {
     width: 100%;
     min-width: 760px;
@@ -228,6 +311,176 @@ textarea {
 
 .persons-error {
     color: #A3341C;
+}
+
+.link-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    > label,
+    .link-type {
+        flex: 1 1 220px;
+        min-width: 0;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    > label {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    select {
+        width: 100%;
+        min-width: 0;
+        height: 42px;
+        padding: 8px 12px;
+        border: 1px solid #E1E4E0;
+        border-radius: 8px;
+        background: #fff;
+        color: #15202B;
+
+        &:focus-visible {
+            outline: 2px solid #1F6F5C;
+            outline-offset: 2px;
+        }
+    }
+}
+
+.link-type {
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    legend {
+        padding: 0;
+        margin-bottom: 6px;
+    }
+}
+
+.link-type-options {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    min-height: 42px;
+
+    label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+    }
+
+    input {
+        margin: 0;
+        accent-color: #1F6F5C;
+    }
+}
+
+.link-help {
+    margin: 14px 0 0;
+    color: #4B5763;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.links-table {
+    min-width: 560px;
+}
+
+.family-diagram {
+    margin: 0 0 26px;
+}
+
+.family-canvas {
+    overflow: auto;
+    border: 1px solid #E1E4E0;
+    border-radius: 14px;
+    background: #fff;
+
+    &:focus-visible {
+        outline: 2px solid #1F6F5C;
+        outline-offset: 3px;
+    }
+
+    svg {
+        display: block;
+        max-width: none;
+        margin: 0 auto;
+        font-family: inherit;
+    }
+}
+
+.family-person-box {
+    fill: #fff;
+    stroke: #1F6F5C;
+    stroke-width: 1.5px;
+}
+
+.family-person-name {
+    fill: #15202B;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.family-person-year {
+    fill: #414D59;
+    font-size: 12px;
+}
+
+.family-parent-line,
+.family-partner-line,
+.family-arrow {
+    fill: none;
+    stroke-width: 1.5px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.family-parent-line,
+.family-arrow {
+    stroke: #1F6F5C;
+}
+
+.family-partner-line {
+    stroke: #B4541A;
+    stroke-dasharray: 4 4;
+}
+
+.family-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 24px;
+    margin-top: 20px;
+    color: #414D59;
+    font-size: 13px;
+
+    span {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    i {
+        display: inline-block;
+        width: 26px;
+        border-top: 2px solid #1F6F5C;
+    }
+
+    .family-legend-partner {
+        border-top: 2px dashed #B4541A;
+    }
+}
+
+.family-empty {
+    margin-bottom: 26px;
+    padding: 48px 24px;
+    color: #4B5763;
+    text-align: center;
+    line-height: 1.6;
 }
 
 @media (max-width: 600px) {
