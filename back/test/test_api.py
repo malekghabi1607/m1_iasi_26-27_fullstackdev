@@ -150,7 +150,7 @@ class TestPostLien:
         """Vérifie que POST /liens ajoute le lien dans le fichier."""
         reponse = client_liens.post(
             "/liens",
-            json={"id": "l_002", "source": "p_002", "destination": "p_001", "type": "partenaire"},
+            json={"id": "l_002", "source": "p_002", "destination": "p_003", "type": "partenaire"},
         )
 
         assert reponse.status_code == 200
@@ -177,6 +177,46 @@ class TestPostLien:
 
 class TestReglesApi:
     """Les règles de l'arbre renvoient une erreur 400 avec un message clair."""
+
+    @pytest.mark.parametrize("source,destination", [("p_002", "p_003"), ("p_003", "p_002")])
+    def test_second_partenaire_renvoie_400(self, client_liens, source, destination):
+        premier = client_liens.post("/liens", json={"id": "l_partenaire", "source": "p_001", "destination": "p_003", "type": "partenaire"})
+        assert premier.status_code == 200
+        reponse = client_liens.post("/liens", json={"id": "l_second", "source": source, "destination": destination, "type": "partenaire"})
+        assert reponse.status_code == 400
+        assert "un seul partenaire" in reponse.json()["detail"]
+        assert len(client_liens.get("/liens").json()) == 2
+
+    def test_modification_vers_un_second_partenaire_renvoie_400(self, client_liens):
+        premier = client_liens.post("/liens", json={"id": "l_partenaire", "source": "p_001", "destination": "p_003", "type": "partenaire"})
+        assert premier.status_code == 200
+        reponse = client_liens.put("/liens/l_001", json={"source": "p_002", "destination": "p_003", "type": "partenaire"})
+        assert reponse.status_code == 400
+        assert "un seul partenaire" in reponse.json()["detail"]
+        assert client_liens.get("/liens/l_001").json()["type"] == "parent"
+
+    @pytest.mark.parametrize("source,destination", [("p_001", "p_002"), ("p_002", "p_001")])
+    def test_partenariat_parent_enfant_renvoie_400(self, client_liens, source, destination):
+        reponse = client_liens.post(
+            "/liens",
+            json={"id": "l_interdit", "source": source, "destination": destination, "type": "partenaire"},
+        )
+        assert reponse.status_code == 400
+        assert "parent et son enfant" in reponse.json()["detail"]
+        assert [l["id"] for l in client_liens.get("/liens").json()] == ["l_001"]
+
+    def test_lien_parent_entre_partenaires_renvoie_400(self, client_liens):
+        client_liens.post("/liens", json={"id": "l_partenaire", "source": "p_001", "destination": "p_003", "type": "partenaire"})
+        reponse = client_liens.post("/liens", json={"id": "l_interdit", "source": "p_001", "destination": "p_003", "type": "parent"})
+        assert reponse.status_code == 400
+        assert "partenaires" in reponse.json()["detail"]
+
+    def test_modification_partenariat_vers_enfant_renvoie_400(self, client_liens):
+        client_liens.post("/liens", json={"id": "l_partenaire", "source": "p_001", "destination": "p_003", "type": "partenaire"})
+        reponse = client_liens.put("/liens/l_partenaire", json={"destination": "p_002"})
+        assert reponse.status_code == 400
+        assert "parent et son enfant" in reponse.json()["detail"]
+        assert client_liens.get("/liens/l_partenaire").json()["destination"] == "p_003"
 
     def test_post_lien_vers_soi_meme_renvoie_400(self, client_liens):
         reponse = client_liens.post(
