@@ -1,0 +1,31 @@
+services:
+  backend:
+    build: ./back
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-9999}:9999"
+    volumes:
+      - type: bind
+        source: ./back/data
+        target: /app/data
+        bind:
+          create_host_path: false
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:9999/personnes', timeout=3)"
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  frontend:
+    build: ./front
+    environment:
+      API_URL: "http://127.0.0.1:${BACKEND_PORT:-9999}"
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
