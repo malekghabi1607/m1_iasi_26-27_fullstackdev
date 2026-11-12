@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 
 // Même adresse que dans Persons.jsx et l'ancienne interface.
-const API = "http://127.0.0.1:9999";
+const API = process.env.API_URL || "http://127.0.0.1:9999";
 const emptyForm = {
     prenom: "",
     nom_famille: "",
