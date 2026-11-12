@@ -3,7 +3,7 @@ import axios from "axios";
 import NewPerson from "./NewPerson";
 
 // Même adresse que dans l'ancienne interface (front/app.js).
-const API = "http://127.0.0.1:9999";
+const API = process.env.API_URL || "http://127.0.0.1:9999";
 const displayValue = (value) => typeof value === "string" && value.trim() ? value : "—";
 
 const Persons = () => {
