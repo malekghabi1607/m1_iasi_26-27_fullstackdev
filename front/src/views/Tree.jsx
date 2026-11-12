@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 
-const API = "http://127.0.0.1:9999";
+const API = process.env.API_URL || "http://127.0.0.1:9999";
 const personName = (person) => [person.prenom, person.nom_famille].filter(Boolean).join(" ") || person.id;
 const apiError = (failure, fallback) => {
     const detail = failure.response?.data?.detail;
